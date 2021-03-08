@@ -39,9 +39,6 @@ dependencies {
 
 	// mysql
 	implementation ("mysql:mysql-connector-java")
-
-	implementation("org.modelmapper:modelmapper:2.1.1")
-	implementation("org.hibernate:hibernate-validator:6.1.5.Final")
 }
 
 tasks.withType<KotlinCompile> {

@@ -26,7 +26,7 @@ class JwtServiceImpl: JwtService {
 
     val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
-    override fun createToken(userId: String): String {
+    override fun createToken(idx: Int): String {
         val secretKey: String? = secretAccessKey
         var expiredAt: Date = Date()
         expiredAt = Date(expiredAt.time + Constants.MILLISECONDS_FOR_A_HOUR * 1)
@@ -38,7 +38,7 @@ class JwtServiceImpl: JwtService {
         headerMap["alg"] = "HS256"
 
         val map: MutableMap<String, Any> = HashMap()
-        map["userId"] = userId
+        map["idx"] = idx
 
         val builder: JwtBuilder = Jwts.builder().setHeaderParams(headerMap)
             .setClaims(map)
@@ -59,7 +59,8 @@ class JwtServiceImpl: JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .body
-            return userRepository.findById(claims["userId"].toString()).get()
+            return userRepository.findByIdx(claims["idx"].toString().toInt())
+                ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저 없음")
 
         } catch (e: ExpiredJwtException) {
             throw HttpClientErrorException(HttpStatus.GONE, "토큰 만료")
