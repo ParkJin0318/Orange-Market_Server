@@ -22,6 +22,14 @@ class UserEntity {
     @Column(name = "name")
     var name: String? = null
 
+    // 도시
+    @Column(name = "city")
+    var city: String? = null
+
+    // 위치
+    @Column(name = "location")
+    var location: String? = null
+
     // 프로필 이미지
     @Column(name = "profile_image")
     var profileImage: String? = null

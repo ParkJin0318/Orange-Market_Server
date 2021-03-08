@@ -6,14 +6,18 @@ class RegisterRequest {
     val userId: String? = null
     val userPw: String? = null
     val name: String? = null
+    val city: String? = null
+    val location: String? = null
     val profileImage: String? = null
 }
 
 fun RegisterRequest.toEntity(): UserEntity {
-    val user = UserEntity()
-    user.userId = this.userId
-    user.userPw = this.userPw
-    user.name = this.name
-    user.profileImage = this.profileImage
-    return user
+    return UserEntity().apply {
+        userId = this@toEntity.userId
+        userPw = this@toEntity.userPw
+        name = this@toEntity.name
+        city = this@toEntity.city
+        location = this@toEntity.location
+        profileImage = this@toEntity.profileImage
+    }
 }

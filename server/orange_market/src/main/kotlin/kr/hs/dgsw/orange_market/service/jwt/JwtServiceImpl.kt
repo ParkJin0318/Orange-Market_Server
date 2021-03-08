@@ -40,7 +40,9 @@ class JwtServiceImpl: JwtService {
         val map: MutableMap<String, Any> = HashMap()
         map["idx"] = idx
 
-        val builder: JwtBuilder = Jwts.builder().setHeaderParams(headerMap)
+        val builder: JwtBuilder = Jwts
+            .builder()
+            .setHeaderParams(headerMap)
             .setClaims(map)
             .setExpiration(expiredAt)
             .signWith(signInKey)

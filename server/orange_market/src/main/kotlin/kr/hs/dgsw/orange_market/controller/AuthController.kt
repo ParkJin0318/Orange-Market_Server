@@ -23,7 +23,7 @@ class AuthController {
     @Autowired
     lateinit var jwtService: JwtServiceImpl
 
-    @GetMapping(value = ["/login"])
+    @PostMapping(value = ["/login"])
     fun login(@RequestBody loginRequest: LoginRequest): ResponseData<LoginData> {
         try {
             val userId: Int? = authService.login(loginRequest)
@@ -38,7 +38,7 @@ class AuthController {
         }
     }
 
-    @GetMapping(value = ["/register"])
+    @PostMapping(value = ["/register"])
     fun register(@RequestBody registerRequest: RegisterRequest): Response {
         try {
             authService.register(registerRequest)

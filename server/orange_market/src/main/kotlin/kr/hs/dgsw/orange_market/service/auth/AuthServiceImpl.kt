@@ -26,10 +26,10 @@ class AuthServiceImpl: AuthService {
 
     override fun register(registerRequest: RegisterRequest) {
         val user: UserEntity? = userRepository.findByUserId(registerRequest.userId)
-        if (user != null) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "이미 존재하는 아이디")
-        } else {
+        if (user == null) {
             userRepository.save(registerRequest.toEntity())
+        } else {
+            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "이미 존재하는 아이디")
         }
     }
 }
