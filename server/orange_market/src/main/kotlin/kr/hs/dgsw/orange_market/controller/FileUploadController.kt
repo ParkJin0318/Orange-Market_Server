@@ -12,6 +12,7 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.util.*
+import java.net.InetAddress
 
 @RestController
 @RequestMapping(value = ["/upload"])
@@ -33,7 +34,7 @@ class FileUploadController {
             val temp = File("${resource.absolutePath}/${stringBuilder}")
             try {
                 file.transferTo(temp)
-                return ResponseData<String>(HttpStatus.OK, "업로드 성공",  stringBuilder.toString())
+                return ResponseData<String>(HttpStatus.OK, "업로드 성공", "$stringBuilder")
             } catch (e: IllegalStateException) {
                 throw e
             } catch (e: IOException) {
