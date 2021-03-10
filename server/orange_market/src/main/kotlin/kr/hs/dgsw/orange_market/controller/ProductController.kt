@@ -1,6 +1,5 @@
 package kr.hs.dgsw.orange_market.controller
 
-import kr.hs.dgsw.orange_market.domain.entity.ProductEntity
 import kr.hs.dgsw.orange_market.domain.model.request.ProductRequest
 import kr.hs.dgsw.orange_market.domain.model.response.ProductData
 import kr.hs.dgsw.orange_market.domain.model.response.Response
