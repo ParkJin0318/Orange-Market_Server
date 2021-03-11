@@ -1,0 +1,98 @@
+PODS:
+  - Alamofire (5.4.1)
+  - Floaty (4.2.0)
+  - MBProgressHUD (1.2.0)
+  - Moya/Core (14.0.0):
+    - Alamofire (~> 5.0)
+  - Moya/RxSwift (14.0.0):
+    - Moya/Core
+    - RxSwift (~> 5.0)
+  - PINCache (3.0.3):
+    - PINCache/Arc-exception-safe (= 3.0.3)
+    - PINCache/Core (= 3.0.3)
+  - PINCache/Arc-exception-safe (3.0.3):
+    - PINCache/Core
+  - PINCache/Core (3.0.3):
+    - PINOperation (~> 1.2.1)
+  - PINOperation (1.2.1)
+  - PINRemoteImage/Core (3.0.3):
+    - PINOperation
+  - PINRemoteImage/iOS (3.0.3):
+    - PINRemoteImage/Core
+  - PINRemoteImage/PINCache (3.0.3):
+    - PINCache (~> 3.0.3)
+    - PINRemoteImage/Core
+  - RxCocoa (5.1.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxRelay (5.1.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.1.1)
+  - RxTexture2 (1.2.0):
+    - RxCocoa (~> 5)
+    - RxSwift (~> 5)
+    - Texture (~> 3.0)
+  - Texture (3.0.0):
+    - Texture/AssetsLibrary (= 3.0.0)
+    - Texture/Core (= 3.0.0)
+    - Texture/MapKit (= 3.0.0)
+    - Texture/Photos (= 3.0.0)
+    - Texture/PINRemoteImage (= 3.0.0)
+    - Texture/Video (= 3.0.0)
+  - Texture/AssetsLibrary (3.0.0):
+    - Texture/Core
+  - Texture/Core (3.0.0)
+  - Texture/MapKit (3.0.0):
+    - Texture/Core
+  - Texture/Photos (3.0.0):
+    - Texture/Core
+  - Texture/PINRemoteImage (3.0.0):
+    - PINRemoteImage/iOS (~> 3.0.0)
+    - PINRemoteImage/PINCache
+    - Texture/Core
+  - Texture/Video (3.0.0):
+    - Texture/Core
+  - Then (2.7.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 5.2)
+  - Floaty (~> 4.2.0)
+  - MBProgressHUD (~> 1.2.0)
+  - Moya/RxSwift
+  - RxTexture2
+  - Then
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - Floaty
+    - MBProgressHUD
+    - Moya
+    - PINCache
+    - PINOperation
+    - PINRemoteImage
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - RxTexture2
+    - Texture
+    - Then
+
+SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  Floaty: e2bd5a0f6f7f70899e26ff2da31081c8bee8d1b0
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
+  PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
+  PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
+  PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
+  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
+  RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
+  RxTexture2: a111717cb8ebbb2250aa31a907e518a132871e86
+  Texture: 2f109e937850d94d1d07232041c9c7313ccddb81
+  Then: acfe0be7e98221c6204e12f8161459606d5d822d
+
+PODFILE CHECKSUM: 34e58e53b29877e6767ea682175ed3ff5a10aba6
+
+COCOAPODS: 1.10.1
