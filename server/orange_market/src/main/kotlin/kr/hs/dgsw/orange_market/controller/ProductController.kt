@@ -19,9 +19,9 @@ class ProductController {
     private lateinit var productService: ProductServiceImpl
 
     @GetMapping(value = [""])
-    fun getAllProducts(): ResponseData<List<ProductData>> {
+    fun getAllProducts(@RequestParam("city") city: String): ResponseData<List<ProductData>> {
         try {
-            val data = productService.getAllProduct()
+            val data = productService.getAllProduct(city)
             return ResponseData(HttpStatus.OK, "조회 성공", data)
 
         } catch (e: HttpClientErrorException) {

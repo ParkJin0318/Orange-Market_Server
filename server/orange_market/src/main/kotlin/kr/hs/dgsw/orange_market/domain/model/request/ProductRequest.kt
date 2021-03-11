@@ -1,13 +1,14 @@
 package kr.hs.dgsw.orange_market.domain.model.request
 
 import kr.hs.dgsw.orange_market.domain.entity.ProductEntity
+import java.time.LocalDateTime
 import java.util.*
 
 class ProductRequest {
     var title: String? = null
     var contents: String? = null
     var price: String? = null
-    var createAt: Date? = null
+    var createAt: LocalDateTime? = null
     var isSold: Int? = null
     var userId: String? = null
     var city: String? = null

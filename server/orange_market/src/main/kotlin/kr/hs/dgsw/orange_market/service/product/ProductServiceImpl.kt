@@ -20,9 +20,9 @@ class ProductServiceImpl: ProductService {
     @Autowired
     private lateinit var productImageRepository: ProductImageRepository
 
-    override fun getAllProduct(): List<ProductData> {
-        val products: List<ProductData> = productRepository.findAll().map { entity ->
+    override fun getAllProduct(city: String): List<ProductData> =
 
+        productRepository.findByCityEquals(city).map { entity ->
             val images: List<String?> = productImageRepository
                 .findAllByProductIdxEquals(entity.idx!!)
                 .map { it.imageUrl }
@@ -39,9 +39,6 @@ class ProductServiceImpl: ProductService {
                 images
             )
         }
-
-        return products
-    }
 
     override fun saveProduct(productRequest: ProductRequest): Int {
         return productRepository.save(productRequest.toEntity()).idx
