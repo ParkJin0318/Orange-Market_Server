@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest
 
 @Component
 object AuthorizationExtractor {
-    private const val AUTHORIZATION: String = "Authorization"
+    private const val TOKEN: String = "token"
 
     fun extract(request: HttpServletRequest, type: String): String {
-        val headers: Enumeration<String> = request.getHeaders(AUTHORIZATION)
+        val headers: Enumeration<String> = request.getHeaders(TOKEN)
         while (headers.hasMoreElements()) {
             val value: String = headers.nextElement()
             if (value.toLowerCase().startsWith(type.toLowerCase())) {

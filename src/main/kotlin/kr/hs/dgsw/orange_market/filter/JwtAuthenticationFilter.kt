@@ -30,7 +30,7 @@ class JwtAuthenticationFilter(
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         try {
-            val token: String = AuthorizationExtractor.extract(request as HttpServletRequest, "Bearer")
+            val token: String = AuthorizationExtractor.extract(request as HttpServletRequest, "")
 
             if (request.method != "OPTIONS") {
                 if (token.isEmpty()) {
@@ -38,7 +38,6 @@ class JwtAuthenticationFilter(
                 }
 
                 val user: UserEntity = jwtService.validateToken(token)
-
                 request.setAttribute("user", user)
             }
 

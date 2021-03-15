@@ -13,11 +13,11 @@ class RegisterRequest {
 
 fun RegisterRequest.toEntity(): UserEntity {
     return UserEntity().apply {
-        userId = this@toEntity.userId
-        userPw = this@toEntity.userPw
-        name = this@toEntity.name
-        city = this@toEntity.city
-        location = this@toEntity.location
-        profileImage = this@toEntity.profileImage
+        this.userId = this@toEntity.userId
+        this.userPw = this@toEntity.userPw
+        this.name = this@toEntity.name
+        this.city = this@toEntity.city
+        this.location = this@toEntity.location
+        this.profileImage = this@toEntity.profileImage
     }
 }
