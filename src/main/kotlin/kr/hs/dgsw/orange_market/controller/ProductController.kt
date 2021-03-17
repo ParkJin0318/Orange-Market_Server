@@ -1,9 +1,9 @@
 package kr.hs.dgsw.orange_market.controller
 
-import kr.hs.dgsw.orange_market.domain.model.request.ProductRequest
-import kr.hs.dgsw.orange_market.domain.model.response.ProductData
-import kr.hs.dgsw.orange_market.domain.model.response.Response
-import kr.hs.dgsw.orange_market.domain.model.response.ResponseData
+import kr.hs.dgsw.orange_market.domain.request.ProductRequest
+import kr.hs.dgsw.orange_market.domain.response.ProductData
+import kr.hs.dgsw.orange_market.domain.response.Response
+import kr.hs.dgsw.orange_market.domain.response.ResponseData
 import kr.hs.dgsw.orange_market.service.product.ProductServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -29,6 +29,19 @@ class ProductController {
         } catch (e: Exception) {
             e.printStackTrace()
             throw HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
+        }
+    }
+
+    @GetMapping(value = ["{idx}"])
+    fun getProduct(@PathVariable("idx") idx: Int): ResponseData<ProductData> {
+        try {
+            val data = productService.getProduct(idx)
+            return ResponseData(HttpStatus.OK, "", data)
+        } catch (e: HttpClientErrorException) {
+            throw e
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
         }
     }
 

@@ -1,8 +1,8 @@
 package kr.hs.dgsw.orange_market.service.town_life
 
 import kr.hs.dgsw.orange_market.domain.entity.TownLifeEntity
-import kr.hs.dgsw.orange_market.domain.model.request.TownLifeRequest
-import kr.hs.dgsw.orange_market.domain.model.request.toEntity
+import kr.hs.dgsw.orange_market.domain.request.TownLifeRequest
+import kr.hs.dgsw.orange_market.domain.request.toEntity
 import kr.hs.dgsw.orange_market.domain.repository.TownLifeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

@@ -1,9 +1,9 @@
 package kr.hs.dgsw.orange_market.service.auth
 
 import kr.hs.dgsw.orange_market.domain.entity.UserEntity
-import kr.hs.dgsw.orange_market.domain.model.request.LoginRequest
-import kr.hs.dgsw.orange_market.domain.model.request.RegisterRequest
-import kr.hs.dgsw.orange_market.domain.model.request.toEntity
+import kr.hs.dgsw.orange_market.domain.request.LoginRequest
+import kr.hs.dgsw.orange_market.domain.request.RegisterRequest
+import kr.hs.dgsw.orange_market.domain.request.toEntity
 import kr.hs.dgsw.orange_market.domain.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

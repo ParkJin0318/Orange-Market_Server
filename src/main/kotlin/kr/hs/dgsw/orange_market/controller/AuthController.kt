@@ -1,10 +1,10 @@
 package kr.hs.dgsw.orange_market.controller
 
-import kr.hs.dgsw.orange_market.domain.model.request.LoginRequest
-import kr.hs.dgsw.orange_market.domain.model.request.RegisterRequest
-import kr.hs.dgsw.orange_market.domain.model.response.LoginData
-import kr.hs.dgsw.orange_market.domain.model.response.Response
-import kr.hs.dgsw.orange_market.domain.model.response.ResponseData
+import kr.hs.dgsw.orange_market.domain.request.LoginRequest
+import kr.hs.dgsw.orange_market.domain.request.RegisterRequest
+import kr.hs.dgsw.orange_market.domain.response.LoginData
+import kr.hs.dgsw.orange_market.domain.response.Response
+import kr.hs.dgsw.orange_market.domain.response.ResponseData
 import kr.hs.dgsw.orange_market.service.auth.AuthServiceImpl
 import kr.hs.dgsw.orange_market.service.jwt.JwtServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping(value = ["/auth"])

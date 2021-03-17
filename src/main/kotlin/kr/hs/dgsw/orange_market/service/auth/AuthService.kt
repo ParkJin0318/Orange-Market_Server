@@ -1,7 +1,7 @@
 package kr.hs.dgsw.orange_market.service.auth
 
-import kr.hs.dgsw.orange_market.domain.model.request.LoginRequest
-import kr.hs.dgsw.orange_market.domain.model.request.RegisterRequest
+import kr.hs.dgsw.orange_market.domain.request.LoginRequest
+import kr.hs.dgsw.orange_market.domain.request.RegisterRequest
 
 interface AuthService {
     fun login(loginRequest: LoginRequest): Int?

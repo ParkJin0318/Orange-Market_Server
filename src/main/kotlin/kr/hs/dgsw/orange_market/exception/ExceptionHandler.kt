@@ -1,6 +1,6 @@
 package kr.hs.dgsw.orange_market.exception
 
-import kr.hs.dgsw.orange_market.domain.model.response.Response
+import kr.hs.dgsw.orange_market.domain.response.Response
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler

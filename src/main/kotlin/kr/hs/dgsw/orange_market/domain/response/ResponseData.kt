@@ -1,4 +1,4 @@
-package kr.hs.dgsw.orange_market.domain.model.response
+package kr.hs.dgsw.orange_market.domain.response
 
 import org.springframework.http.HttpStatus
 

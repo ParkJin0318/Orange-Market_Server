@@ -1,7 +1,7 @@
 package kr.hs.dgsw.orange_market.controller
 
 import kr.hs.dgsw.orange_market.domain.entity.UserEntity
-import kr.hs.dgsw.orange_market.domain.model.response.ResponseData
+import kr.hs.dgsw.orange_market.domain.response.ResponseData
 import kr.hs.dgsw.orange_market.service.jwt.JwtServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

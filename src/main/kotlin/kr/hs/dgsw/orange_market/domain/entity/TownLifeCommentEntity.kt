@@ -1,6 +1,6 @@
 package kr.hs.dgsw.orange_market.domain.entity
 
-import java.time.LocalDateTime
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -18,7 +18,7 @@ class TownLifeCommentEntity {
     var comment: String? = null
 
     @Column(name = "create_at")
-    var createAt: LocalDateTime? = null
+    var createAt: Timestamp? = null
 
     @Column(name = "location")
     var location: String? = null

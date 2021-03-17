@@ -1,6 +1,6 @@
 package kr.hs.dgsw.orange_market.controller
 
-import kr.hs.dgsw.orange_market.domain.model.response.ResponseData
+import kr.hs.dgsw.orange_market.domain.response.ResponseData
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.util.ResourceUtils
@@ -12,7 +12,6 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.util.*
-import java.net.InetAddress
 
 @RestController
 @RequestMapping(value = ["/upload"])

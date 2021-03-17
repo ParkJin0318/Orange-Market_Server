@@ -1,4 +1,4 @@
-package kr.hs.dgsw.orange_market.domain.model.request
+package kr.hs.dgsw.orange_market.domain.request
 
 import kr.hs.dgsw.orange_market.domain.entity.UserEntity
 

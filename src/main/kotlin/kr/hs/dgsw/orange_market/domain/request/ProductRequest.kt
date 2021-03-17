@@ -1,14 +1,13 @@
-package kr.hs.dgsw.orange_market.domain.model.request
+package kr.hs.dgsw.orange_market.domain.request
 
 import kr.hs.dgsw.orange_market.domain.entity.ProductEntity
-import java.time.LocalDateTime
+import java.sql.Timestamp
 import java.util.*
 
 class ProductRequest {
     var title: String? = null
     var contents: String? = null
     var price: String? = null
-    var createAt: LocalDateTime? = null
     var isSold: Int? = null
     var userId: String? = null
     var city: String? = null
@@ -21,7 +20,7 @@ fun ProductRequest.toEntity(): ProductEntity {
         this.title = this@toEntity.title
         this.contents = this@toEntity.contents
         this.price = this@toEntity.price
-        this.createAt = this@toEntity.createAt
+        this.createAt = Timestamp(Date().time)
         this.isSold = this@toEntity.isSold
         this.userId = this@toEntity.userId
         this.city = this@toEntity.city
