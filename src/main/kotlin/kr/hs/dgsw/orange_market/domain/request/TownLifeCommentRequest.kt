@@ -9,7 +9,7 @@ class TownLifeCommentRequest {
     var comment: String? = null
     var createAt: Date? = null
     var location: String? = null
-    var userId: String? = null
+    var userIdx: Int? = null
 }
 
 fun TownLifeCommentRequest.toEntity(): TownLifeCommentEntity {
@@ -18,6 +18,6 @@ fun TownLifeCommentRequest.toEntity(): TownLifeCommentEntity {
         this.comment = this@toEntity.comment
         this.createAt = this@toEntity.createAt as Timestamp?
         this.location = this@toEntity.location
-        this.userId = this@toEntity.userId
+        this.userIdx = this@toEntity.userIdx
     }
 }

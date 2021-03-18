@@ -26,6 +26,6 @@ class TownLifeEntity {
     @Column(name = "create_at")
     var createAt: Timestamp? = null
 
-    @Column(name = "user_id")
-    var userId: String? = null
+    @Column(name = "user_idx")
+    var userIdx: Int? = null
 }

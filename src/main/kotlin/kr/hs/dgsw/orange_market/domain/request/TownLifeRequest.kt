@@ -10,7 +10,7 @@ class TownLifeRequest {
     var city: String? = null
     var location: String? = null
     var createAt: Date? = null
-    var userId: String? = null
+    var userIdx: Int? = null
 }
 
 fun TownLifeRequest.toEntity(): TownLifeEntity {
@@ -20,6 +20,6 @@ fun TownLifeRequest.toEntity(): TownLifeEntity {
         this.city = this@toEntity.city
         this.location = this@toEntity.location
         this.createAt = this@toEntity.createAt as Timestamp?
-        this.userId = this@toEntity.userId
+        this.userIdx = this@toEntity.userIdx
     }
 }

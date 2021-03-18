@@ -9,7 +9,7 @@ class ProductRequest {
     var contents: String? = null
     var price: String? = null
     var isSold: Int? = null
-    var userId: String? = null
+    var userIdx: Int? = null
     var city: String? = null
     var location: String? = null
     var imageList: List<String>? = null
@@ -22,8 +22,7 @@ fun ProductRequest.toEntity(): ProductEntity {
         this.price = this@toEntity.price
         this.createAt = Timestamp(Date().time)
         this.isSold = this@toEntity.isSold
-        this.userId = this@toEntity.userId
+        this.userIdx = this@toEntity.userIdx
         this.city = this@toEntity.city
-        this.location = this@toEntity.location
     }
 }

@@ -17,6 +17,8 @@ class JwtFilterConfig {
     fun authFilter(): FilterRegistrationBean<JwtAuthenticationFilter> {
         val registrationBean: FilterRegistrationBean<JwtAuthenticationFilter> = FilterRegistrationBean<JwtAuthenticationFilter>()
         registrationBean.filter = JwtAuthenticationFilter(handlerExceptionResolver)
+        registrationBean.addUrlPatterns("/auth/profile")
+        registrationBean.addUrlPatterns("/user/*")
         registrationBean.addUrlPatterns("/product/*")
         registrationBean.addUrlPatterns("/upload/*")
         registrationBean.order = 2

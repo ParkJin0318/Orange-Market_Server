@@ -23,6 +23,6 @@ class TownLifeCommentEntity {
     @Column(name = "location")
     var location: String? = null
 
-    @Column(name = "user_id")
-    var userId: String? = null
+    @Column(name = "user_idx")
+    var userIdx: Int? = null
 }

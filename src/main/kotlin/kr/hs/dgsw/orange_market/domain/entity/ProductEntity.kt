@@ -26,12 +26,9 @@ class ProductEntity {
     @Column(name = "is_sold")
     var isSold: Int? = null
 
-    @Column(name = "user_id")
-    var userId: String? = null
-
     @Column(name = "city")
     var city: String? = null
 
-    @Column(name = "location")
-    var location: String? = null
+    @Column(name = "user_idx")
+    var userIdx: Int? = null
 }

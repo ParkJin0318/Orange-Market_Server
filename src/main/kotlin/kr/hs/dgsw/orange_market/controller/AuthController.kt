@@ -1,5 +1,6 @@
 package kr.hs.dgsw.orange_market.controller
 
+import kr.hs.dgsw.orange_market.domain.entity.UserEntity
 import kr.hs.dgsw.orange_market.domain.request.LoginRequest
 import kr.hs.dgsw.orange_market.domain.request.RegisterRequest
 import kr.hs.dgsw.orange_market.domain.response.LoginData
@@ -48,6 +49,16 @@ class AuthController {
             throw e
         } catch (e: Exception) {
             throw HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
+        }
+    }
+
+    @GetMapping(value = ["/profile"])
+    fun getUserProfile(request: HttpServletRequest): ResponseData<Any> {
+        try {
+            val user: UserEntity = request.getAttribute("user") as UserEntity
+            return ResponseData(HttpStatus.OK, "프로필 조회 성공", user)
+        } catch (e: HttpClientErrorException) {
+            throw e
         }
     }
 }
