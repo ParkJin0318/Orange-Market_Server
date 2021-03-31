@@ -22,7 +22,6 @@ class ProductServiceImpl: ProductService {
     private lateinit var productImageRepository: ProductImageRepository
 
     override fun getAllProduct(city: String): List<ProductData> =
-
         productRepository.findAllByCityEquals(city).map { entity ->
             val images: List<String?> = productImageRepository
                 .findAllByProductIdxEquals(entity.idx!!)

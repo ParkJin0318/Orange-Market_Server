@@ -17,4 +17,8 @@ class UserServiceImpl: UserService {
         return userRepository.findByIdx(idx)
             ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "Not Found")
     }
+
+    override fun updateLocation(userEntity: UserEntity) {
+        userRepository.save(userEntity)
+    }
 }
