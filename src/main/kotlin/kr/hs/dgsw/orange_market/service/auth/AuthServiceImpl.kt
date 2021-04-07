@@ -1,14 +1,11 @@
 package kr.hs.dgsw.orange_market.service.auth
 
-import kr.hs.dgsw.orange_market.domain.entity.UserEntity
-import kr.hs.dgsw.orange_market.domain.request.LoginRequest
-import kr.hs.dgsw.orange_market.domain.request.RegisterRequest
-import kr.hs.dgsw.orange_market.domain.request.toEntity
-import kr.hs.dgsw.orange_market.domain.repository.UserRepository
+import kr.hs.dgsw.orange_market.domain.request.auth.LoginRequest
+import kr.hs.dgsw.orange_market.domain.repository.user.UserRepository
+import kr.hs.dgsw.orange_market.domain.request.auth.RegisterRequest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
+import reactor.core.publisher.Mono
 
 @Service
 class AuthServiceImpl: AuthService {
@@ -16,20 +13,16 @@ class AuthServiceImpl: AuthService {
     @Autowired
     private lateinit var userRepository: UserRepository
 
-    override fun login(loginRequest: LoginRequest): Int? {
-        val user: UserEntity = userRepository.findByUserIdAndUserPw(
-            loginRequest.userId,
-            loginRequest.userPw
-        ) ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "인증 실패")
-        return user.idx
-    }
+    override fun login(loginRequest: LoginRequest): Mono<Int> =
+        Mono.justOrEmpty(userRepository.findByUserIdAndUserPw(
+            loginRequest.userId!!,
+            loginRequest.userPw!!
+        ).map { it.idx })
 
-    override fun register(registerRequest: RegisterRequest) {
-        val user: UserEntity? = userRepository.findByUserId(registerRequest.userId)
-        if (user == null) {
-            userRepository.save(registerRequest.toEntity())
-        } else {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "이미 존재하는 아이디")
-        }
-    }
+    override fun register(registerRequest: RegisterRequest): Mono<Boolean> =
+        Mono.justOrEmpty(userRepository.findByUserId(registerRequest.userId!!)
+            .filter { it != null }
+            .map {
+                userRepository.save(it)
+            } != null)
 }

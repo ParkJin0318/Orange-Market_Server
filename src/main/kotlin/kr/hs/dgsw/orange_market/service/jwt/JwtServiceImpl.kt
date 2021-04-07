@@ -1,14 +1,17 @@
 package kr.hs.dgsw.orange_market.service.jwt
 
 import io.jsonwebtoken.*
-import kr.hs.dgsw.orange_market.domain.entity.UserEntity
-import kr.hs.dgsw.orange_market.domain.repository.UserRepository
+import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
+import kr.hs.dgsw.orange_market.domain.mapper.toResponse
+import kr.hs.dgsw.orange_market.domain.repository.user.UserRepository
+import kr.hs.dgsw.orange_market.domain.response.user.UserResponse
 import kr.hs.dgsw.orange_market.util.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
+import reactor.core.publisher.Mono
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.security.Key
@@ -26,10 +29,11 @@ class JwtServiceImpl: JwtService {
 
     val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
-    override fun createToken(idx: Int): String {
+    override fun createToken(idx: Int): Mono<String> {
         val secretKey: String? = secretAccessKey
         var expiredAt: Date = Date()
         expiredAt = Date(expiredAt.time + Constants.MILLISECONDS_FOR_A_HOUR * 1)
+        println(expiredAt)
 
         val signInKey: Key = SecretKeySpec(secretKey!!.toByteArray(), signatureAlgorithm.jcaName)
 
@@ -47,34 +51,22 @@ class JwtServiceImpl: JwtService {
             .setExpiration(expiredAt)
             .signWith(signInKey)
 
-        return builder.compact()
+        return Mono.justOrEmpty(builder.compact())
     }
 
-    override fun validateToken(token: String): UserEntity {
-        try {
-            val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
+    override fun validateToken(token: String): Mono<UserResponse> {
+        val signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.HS256
 
-            val signingKey: Key = SecretKeySpec(secretAccessKey!!.toByteArray(), signatureAlgorithm.jcaName)
-            val claims: Claims = Jwts
-                .parserBuilder()
-                .setSigningKey(signingKey)
-                .build()
-                .parseClaimsJws(token)
-                .body
-            return userRepository.findByIdx(claims["idx"].toString().toInt())
-                ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "유저 없음")
+        val signingKey: Key = SecretKeySpec(secretAccessKey!!.toByteArray(), signatureAlgorithm.jcaName)
+        val claims: Claims = Jwts
+            .parserBuilder()
+            .setSigningKey(signingKey)
+            .build()
+            .parseClaimsJws(token)
+            .body
 
-        } catch (e: ExpiredJwtException) {
-            throw HttpClientErrorException(HttpStatus.GONE, "토큰 만료")
-        } catch (e: SignatureException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
-        } catch (e: MalformedJwtException) {
-            throw HttpClientErrorException(HttpStatus.UNAUTHORIZED, "토큰 위조")
-        } catch (e: IllegalArgumentException) {
-            throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "토큰 없음")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류")
-        }
+        return Mono.justOrEmpty(userRepository.findByIdx(claims["idx"].toString().toInt()).map {
+            it.toResponse()
+        })
     }
 }
