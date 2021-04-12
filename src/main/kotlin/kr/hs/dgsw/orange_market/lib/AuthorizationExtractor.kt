@@ -1,23 +1,20 @@
 package kr.hs.dgsw.orange_market.lib
 
 import org.apache.logging.log4j.util.Strings
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
-import java.util.*
-import javax.servlet.http.HttpServletRequest
+import org.springframework.web.reactive.function.server.ServerRequest
 
 @Component
 object AuthorizationExtractor {
-    private const val TOKEN: String = "token"
+    fun extract(request: ServerRequest, type: String): String {
+        val headers = request.headers().asHttpHeaders()[HttpHeaders.AUTHORIZATION]
 
-    fun extract(request: HttpServletRequest, type: String): String {
-        val headers: Enumeration<String> = request.getHeaders(TOKEN)
-        while (headers.hasMoreElements()) {
-            val value: String = headers.nextElement()
+        headers?.forEach { value ->
             if (value.toLowerCase().startsWith(type.toLowerCase())) {
                 return value.substring(type.length).trim()
             }
         }
-
         return Strings.EMPTY
     }
 }

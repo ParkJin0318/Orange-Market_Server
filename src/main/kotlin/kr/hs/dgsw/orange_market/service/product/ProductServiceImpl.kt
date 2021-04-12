@@ -1,55 +1,51 @@
 package kr.hs.dgsw.orange_market.service.product
 
-import kr.hs.dgsw.orange_market.domain.entity.ProductImageEntity
-import kr.hs.dgsw.orange_market.domain.request.ProductRequest
-import kr.hs.dgsw.orange_market.domain.request.toEntity
-import kr.hs.dgsw.orange_market.domain.response.ProductData
-import kr.hs.dgsw.orange_market.domain.repository.ProductImageRepository
-import kr.hs.dgsw.orange_market.domain.repository.ProductRepository
-import kr.hs.dgsw.orange_market.domain.response.toModel
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
+import kr.hs.dgsw.orange_market.domain.entity.product.ProductImageEntity
+import kr.hs.dgsw.orange_market.domain.mapper.toEntity
+import kr.hs.dgsw.orange_market.domain.mapper.toResponse
+import kr.hs.dgsw.orange_market.domain.repository.product.ProductImageRepository
+import kr.hs.dgsw.orange_market.domain.repository.product.ProductRepository
+import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
+import kr.hs.dgsw.orange_market.domain.response.product.ProductResponse
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException
+import reactor.core.publisher.Mono
 
 @Service
-class ProductServiceImpl: ProductService {
+class ProductServiceImpl(
+    private val productRepository: ProductRepository,
+    private val productImageRepository: ProductImageRepository
+): ProductService {
 
-    @Autowired
-    private lateinit var productRepository: ProductRepository
+    override fun getAllProduct(city: String): Mono<List<ProductResponse>> =
+        Mono.justOrEmpty(productRepository.findAllByCityEquals(city).orElse(emptyList()).map { productEntity ->
+            val imageList = productImageRepository
+                .findAllByProductIdxEquals(productEntity.idx!!)
+                .orElse(emptyList())
+                .map(ProductImageEntity::imageUrl)
 
-    @Autowired
-    private lateinit var productImageRepository: ProductImageRepository
+            productEntity.toResponse(imageList)
+        })
 
-    override fun getAllProduct(city: String): List<ProductData> =
-        productRepository.findAllByCityEquals(city).map { entity ->
-            val images: List<String?> = productImageRepository
-                .findAllByProductIdxEquals(entity.idx!!)
-                .map { it.imageUrl }
+    override fun getProduct(idx: Int): Mono<ProductResponse> =
+        Mono.justOrEmpty(productRepository.findByIdxEquals(idx).map { productEntity ->
+            val imageList = productImageRepository
+                .findAllByProductIdxEquals(idx)
+                .orElse(emptyList())
+                .map(ProductImageEntity::imageUrl)
 
-            return@map entity.toModel(images)
-        }
+            productEntity.toResponse(imageList)
+        })
 
-    override fun getProduct(idx: Int): ProductData {
-        val images: List<String?> = productImageRepository
-            .findAllByProductIdxEquals(idx)
-            .map { it.imageUrl }
 
-        return productRepository.findByIdxEquals(idx).toModel(images)
-    }
+    override fun saveProduct(productRequest: ProductRequest): Mono<Int> =
+        Mono.justOrEmpty(productRepository.save(productRequest.toEntity()).idx)
 
-    override fun saveProduct(productRequest: ProductRequest): Int {
-        return productRepository.save(productRequest.toEntity()).idx
-            ?: throw HttpClientErrorException(HttpStatus.NOT_FOUND, "idx Error")
-    }
-
-    override fun saveProductImage(idx: Int, imageList: List<String>) {
-        val entityList: List<ProductImageEntity> = imageList.map { image ->
+    override fun saveProductImage(productIdx: Int, imageList: List<String>): Mono<List<ProductImageEntity>> =
+        Mono.justOrEmpty(imageList.map { image ->
             ProductImageEntity().apply {
-                this.productIdx = idx
+                this.productIdx = productIdx
                 this.imageUrl = image
             }
-        }
-        productImageRepository.saveAll(entityList)
-    }
+        }.map(productImageRepository::save))
+
 }

@@ -1,3 +1,0 @@
-package kr.hs.dgsw.orange_market.service.town_life_comment
-
-interface TownLifeCommentService
