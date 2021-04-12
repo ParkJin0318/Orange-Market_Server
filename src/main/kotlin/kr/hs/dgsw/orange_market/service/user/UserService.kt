@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 
 interface UserService {
     fun getUser(idx: Int): Mono<UserResponse>
-    fun updateLocation(userEntity: UserEntity): Mono<Boolean>
+    fun updateLocation(userEntity: UserEntity): Mono<UserEntity>
 }

@@ -21,7 +21,7 @@ class ProductServiceImpl(
             val imageList = productImageRepository
                 .findAllByProductIdxEquals(productEntity.idx!!)
                 .orElse(emptyList())
-                .map { it.imageUrl }
+                .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
         })
@@ -31,7 +31,7 @@ class ProductServiceImpl(
             val imageList = productImageRepository
                 .findAllByProductIdxEquals(idx)
                 .orElse(emptyList())
-                .map { it.imageUrl }
+                .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
         })
@@ -40,12 +40,12 @@ class ProductServiceImpl(
     override fun saveProduct(productRequest: ProductRequest): Mono<Int> =
         Mono.justOrEmpty(productRepository.save(productRequest.toEntity()).idx)
 
-    override fun saveProductImage(productIdx: Int, imageList: List<String>) {
-        imageList.map { image ->
+    override fun saveProductImage(productIdx: Int, imageList: List<String>): Mono<List<ProductImageEntity>> =
+        Mono.justOrEmpty(imageList.map { image ->
             ProductImageEntity().apply {
                 this.productIdx = productIdx
                 this.imageUrl = image
             }
-        }.map { productImageRepository.save(it) }
-    }
+        }.map(productImageRepository::save))
+
 }

@@ -1,6 +1,5 @@
 package kr.hs.dgsw.orange_market.handler
 
-import javassist.NotFoundException
 import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
@@ -16,8 +15,10 @@ class ProductHandler(
     private val productService: ProductServiceImpl
 ) {
     fun getAll(request: ServerRequest): Mono<ServerResponse> =
-        productService.getAllProduct(request.queryParam("city").get())
-            .switchIfEmpty(Mono.error(NotFoundException("Not Found")))
+        Mono.justOrEmpty(request.queryParam("city"))
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(productService::getAllProduct)
+            .switchIfEmpty(Mono.error(Exception("조회 실패")))
             .flatMap {
                 ResponseData("조회 성공", it).toServerResponse()
             }.onErrorResume {
@@ -25,8 +26,10 @@ class ProductHandler(
             }
 
     fun get(request: ServerRequest): Mono<ServerResponse> =
-        productService.getProduct(request.pathVariable("idx").toInt())
-            .switchIfEmpty(Mono.error(NotFoundException("Not Found")))
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(productService::getProduct)
+            .switchIfEmpty(Mono.error(Exception("조회 실패")))
             .flatMap {
                 ResponseData("조회 성공", it).toServerResponse()
             }.onErrorResume {
@@ -34,13 +37,16 @@ class ProductHandler(
             }
 
     fun save(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(ProductRequest::class.java).flatMap { productRequest ->
-            productService.saveProduct(productRequest).map { idx ->
-                productService.saveProductImage(idx, productRequest.imageList ?: emptyList())
+        request.bodyToMono(ProductRequest::class.java)
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap { productRequest ->
+                productService.saveProduct(productRequest).flatMap {
+                    productService.saveProductImage(it, productRequest.imageList ?: emptyList())
+                }
+            }.switchIfEmpty(Mono.error(Exception("등록 실패")))
+            .flatMap {
+                Response("등록 성공").toServerResponse()
+            }.onErrorResume {
+                Response(it.message).toServerResponse()
             }
-        }.flatMap {
-            Response("등록 성공").toServerResponse()
-        }.onErrorResume {
-            Response(it.message).toServerResponse()
-        }
 }

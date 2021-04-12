@@ -16,7 +16,10 @@ class UserHandler(
     private val userService: UserServiceImpl
 ) {
     fun getUser(request: ServerRequest): Mono<ServerResponse> =
-        userService.getUser(request.pathVariable("idx").toInt())
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(userService::getUser)
+            .switchIfEmpty(Mono.error(Exception("사용자가 없음")))
             .flatMap {
                 ResponseData("조회 성공", it).toServerResponse()
             }.onErrorResume {
@@ -24,15 +27,16 @@ class UserHandler(
             }
 
     fun updateLocation(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(LocationRequest::class.java).flatMap { locationRequest ->
-            val userEntity: UserEntity = request.attribute("user").get() as UserEntity
-            userEntity.city = locationRequest.city
-            userEntity.location = locationRequest.location
-
-            userService.updateLocation(userEntity)
-        }.flatMap {
-            if (it) Response("위치 업데이트 성공").toServerResponse()
-            else Response("위치 업데이트 실패").toServerResponse()
+        request.bodyToMono(LocationRequest::class.java).map { locationRequest ->
+            (request.attribute("user").get() as UserEntity).apply {
+                this.city = locationRequest.city!!
+                this.location = locationRequest.location!!
+            }
+        }.switchIfEmpty(Mono.error(Exception("Bad Request")))
+        .flatMap(userService::updateLocation)
+        .switchIfEmpty(Mono.error(Exception("위치 업데이트 실패")))
+        .flatMap {
+            Response("위치 업데이트 성공").toServerResponse()
         }.onErrorResume {
             Response(it.message).toServerResponse()
         }

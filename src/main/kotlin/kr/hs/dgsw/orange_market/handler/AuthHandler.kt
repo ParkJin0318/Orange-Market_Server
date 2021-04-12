@@ -18,23 +18,26 @@ class AuthHandler(
     private val jwtService: JwtServiceImpl
 ) {
     fun login(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(LoginRequest::class.java).flatMap { loginRequest ->
-            authService.login(loginRequest).flatMap { idx ->
-                jwtService.createToken(idx)
+        request.bodyToMono(LoginRequest::class.java)
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(authService::login)
+            .switchIfEmpty(Mono.error(Exception("로그인 실패")))
+            .flatMap(jwtService::createToken)
+            .switchIfEmpty(Mono.error(Exception("토큰 오류")))
+            .flatMap {
+                ResponseData("로그인 성공", it).toServerResponse()
+            }.onErrorResume {
+                Response(it.message).toServerResponse()
             }
-        }.flatMap {
-            ResponseData("로그인 성공", it).toServerResponse()
-        }.onErrorResume {
-            Response(it.message).toServerResponse()
-        }
 
     fun register(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(RegisterRequest::class.java).flatMap { registerRequest ->
-            authService.register(registerRequest)
-        }.flatMap {
-            if (it) Response("회원가입 성공").toServerResponse()
-            else Response("아이디 중복").toServerResponse()
-        }.onErrorResume {
-            Response(it.message).toServerResponse()
-        }
+        request.bodyToMono(RegisterRequest::class.java)
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(authService::register)
+            .switchIfEmpty(Mono.error(Exception("회원가입 실패")))
+            .flatMap {
+                Response("회원가입 성공").toServerResponse()
+            }.onErrorResume {
+                Response(it.message).toServerResponse()
+            }
 }
