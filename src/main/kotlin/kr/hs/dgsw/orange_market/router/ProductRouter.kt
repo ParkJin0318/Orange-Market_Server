@@ -19,7 +19,8 @@ class ProductRouter(
             listOf(
                 GET("", handler::getAll),
                 GET("/{idx}", handler::get),
-                POST("", handler::save)
+                POST("", handler::save),
+                DELETE("/{idx}", handler::delete)
             )
         }.filter(jwtFilter)
     )

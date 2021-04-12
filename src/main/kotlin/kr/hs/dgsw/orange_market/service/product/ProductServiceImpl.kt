@@ -9,6 +9,7 @@ import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
 import kr.hs.dgsw.orange_market.domain.response.product.ProductResponse
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import javax.transaction.Transactional
 
 @Service
 class ProductServiceImpl(
@@ -47,5 +48,14 @@ class ProductServiceImpl(
                 this.imageUrl = image
             }
         }.map(productImageRepository::save))
+
+    @Transactional
+    override fun deleteProduct(idx: Int): Mono<Int> {
+        val isDelete = productRepository.deleteByIdxEquals(idx)
+        if (isDelete.get() == 0)
+            return Mono.empty()
+
+       return Mono.justOrEmpty(isDelete)
+    }
 
 }

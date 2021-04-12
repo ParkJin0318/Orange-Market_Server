@@ -9,4 +9,5 @@ import java.util.*
 interface ProductRepository: JpaRepository<ProductEntity, Any> {
     fun findAllByCityEquals(city: String): Optional<List<ProductEntity>>
     fun findByIdxEquals(idx: Int): Optional<ProductEntity>
+    fun deleteByIdxEquals(idx: Int): Optional<Int>
 }

@@ -10,4 +10,5 @@ interface ProductService {
     fun getProduct(idx: Int): Mono<ProductResponse>
     fun saveProduct(productRequest: ProductRequest): Mono<Int>
     fun saveProductImage(productIdx: Int, imageList: List<String>): Mono<List<ProductImageEntity>>
+    fun deleteProduct(idx: Int): Mono<Int>
 }

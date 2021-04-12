@@ -49,4 +49,15 @@ class ProductHandler(
             }.onErrorResume {
                 Response(it.message).toServerResponse()
             }
+
+    fun delete(request: ServerRequest): Mono<ServerResponse> =
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap(productService::deleteProduct)
+            .switchIfEmpty(Mono.error(Exception("삭제 실패")))
+            .flatMap {
+                Response("삭제 성공").toServerResponse()
+            }.onErrorResume {
+                Response(it.message).toServerResponse()
+            }
 }
