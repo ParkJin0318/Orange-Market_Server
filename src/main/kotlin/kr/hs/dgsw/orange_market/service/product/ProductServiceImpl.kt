@@ -26,7 +26,7 @@ class ProductServiceImpl(
                 .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
-        })
+        }).switchIfEmpty(Mono.error(Exception("조회 실패")))
 
     @Transactional
     override fun getProduct(idx: Int): Mono<ProductResponse> =
@@ -37,40 +37,36 @@ class ProductServiceImpl(
                 .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
-        })
+        }).switchIfEmpty(Mono.error(Exception("조회 실패")))
 
     @Transactional
     override fun saveProduct(productRequest: ProductRequest): Mono<Unit> =
         Mono.justOrEmpty(productRepository.save(productRequest.toEntity()))
-            .map { entity ->
-                productRequest.imageList?.map { image ->
-                    ProductImageEntity().apply {
-                        this.productIdx = entity.idx!!
-                        this.imageUrl = image
-                    }
-                }?.map(productImageRepository::save)
-            }
+            .flatMap { saveProductImage(productRequest.imageList, it.idx) }
+
+    @Transactional
+    override fun saveProductImage(imageList: List<String>?, idx: Int?): Mono<Unit> =
+        Mono.justOrEmpty(
+            imageList?.map { image ->
+                ProductImageEntity().apply {
+                    this.productIdx = idx
+                    this.imageUrl = image
+                }
+            }?.map(productImageRepository::save))
+            .switchIfEmpty(Mono.error(Exception("저장 실패")))
+            .flatMap { Mono.just(Unit) }
 
     @Transactional
     override fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit> =
-        Mono.justOrEmpty(
-            productRepository.save(productRequest.toEntity().apply { this.idx = idx })
-        ).map { entity ->
-            productRequest.imageList?.map { image ->
-                ProductImageEntity().apply {
-                    this.productIdx = entity.idx!!
-                    this.imageUrl = image
-                }
-            }?.map(productImageRepository::save)
-        }
+        Mono.justOrEmpty(productRepository.save(productRequest.toEntity().apply { this.idx = idx }))
+            .switchIfEmpty(Mono.error(Exception("저장 실패")))
+            .flatMap { saveProductImage(productRequest.imageList, it.idx) }
 
     @Transactional
-    override fun deleteProduct(idx: Int): Mono<Unit> {
-        val isDelete = productRepository.deleteByIdxEquals(idx)
-        if (isDelete.get() == 0)
-            return Mono.empty()
-
-       return Mono.just(Unit)
-    }
-
+    override fun deleteProduct(idx: Int): Mono<Unit> =
+        Mono.justOrEmpty(productRepository.deleteByIdxEquals(idx))
+            .flatMap {
+                if (it == 0) Mono.empty()
+                else Mono.just(Unit)
+            }.switchIfEmpty(Mono.error(Exception("삭제 실패")))
 }

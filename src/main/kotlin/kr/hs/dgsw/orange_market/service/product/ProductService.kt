@@ -8,6 +8,7 @@ interface ProductService {
     fun getAllProduct(city: String): Mono<List<ProductResponse>>
     fun getProduct(idx: Int): Mono<ProductResponse>
     fun saveProduct(productRequest: ProductRequest): Mono<Unit>
+    fun saveProductImage(imageList: List<String>?, idx: Int?): Mono<Unit>
     fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit>
     fun deleteProduct(idx: Int): Mono<Unit>
 }

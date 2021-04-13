@@ -18,7 +18,6 @@ class ProductHandler(
         Mono.justOrEmpty(request.queryParam("city"))
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::getAllProduct)
-            .switchIfEmpty(Mono.error(Exception("조회 실패")))
             .flatMap {
                 ResponseData("조회 성공", it).toServerResponse()
             }.onErrorResume {
@@ -29,7 +28,6 @@ class ProductHandler(
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::getProduct)
-            .switchIfEmpty(Mono.error(Exception("조회 실패")))
             .flatMap {
                 ResponseData("조회 성공", it).toServerResponse()
             }.onErrorResume {
@@ -64,10 +62,6 @@ class ProductHandler(
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::deleteProduct)
-            .switchIfEmpty(Mono.error(Exception("삭제 실패")))
-            .flatMap {
-                Response("삭제 성공").toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { Response("삭제 성공").toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 }

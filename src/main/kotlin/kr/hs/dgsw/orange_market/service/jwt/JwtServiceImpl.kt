@@ -7,10 +7,10 @@ import kr.hs.dgsw.orange_market.util.Constants
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import java.lang.Exception
 import java.security.Key
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
+import kotlin.Exception
 import kotlin.collections.HashMap
 
 @Service
@@ -43,6 +43,7 @@ class JwtServiceImpl(
             .setExpiration(date)
             .signWith(signInKey)
             .compact())
+            .switchIfEmpty(Mono.error(Exception("토큰 생성 오류")))
     }
 
     override fun validateToken(token: String): Mono<UserEntity> =
@@ -54,16 +55,16 @@ class JwtServiceImpl(
                 .parseClaimsJws(token)
                 .body["idx"].toString().toInt()
 
-            Mono.justOrEmpty(userRepository.findByIdx(idx).map { it })
+            Mono.justOrEmpty(userRepository.findByIdx(idx))
         } catch (e: ExpiredJwtException) {
-            Mono.error(e)
+            Mono.error(Exception("토큰 만료"))
         } catch (e: SignatureException) {
-            Mono.error(e)
+            Mono.error(Exception("토큰 위조"))
         } catch (e: MalformedJwtException) {
-            Mono.error(e)
+            Mono.error(Exception("토큰 위조"))
         } catch (e: IllegalArgumentException) {
-            Mono.error(e)
+            Mono.error(Exception("토큰 없음"))
         } catch (e: Exception) {
-            Mono.error(e)
+            Mono.error(Exception("서버 오류"))
         }
 }
