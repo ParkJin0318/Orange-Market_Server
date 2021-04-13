@@ -33,9 +33,9 @@ class UploadHandler {
                 val temp = File("${resource.absolutePath}/${stringBuilder}")
 
                 file.transferTo(temp)
-            }.then(Mono.just("이미지 등록 성공"))
+            }.next()
             .flatMap {
-                Response(it).toServerResponse()
+                Response("이미지 등록 성공").toServerResponse()
             }.onErrorResume {
                 Response(it.message).toServerResponse()
             }

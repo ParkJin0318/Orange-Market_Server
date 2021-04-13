@@ -17,6 +17,7 @@ class UserRouter(
     fun routerUser() = RouterFunctions.nest(RequestPredicates.path("/user"),
         router {
             listOf(
+                GET("/profile", handler::getUserProfile),
                 GET("/{idx}", handler::getUser),
                 POST("/location", handler::updateLocation)
             )

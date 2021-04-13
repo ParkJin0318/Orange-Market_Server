@@ -20,6 +20,7 @@ class ProductRouter(
                 GET("", handler::getAll),
                 GET("/{idx}", handler::get),
                 POST("", handler::save),
+                PUT("/{idx}", handler::update),
                 DELETE("/{idx}", handler::delete)
             )
         }.filter(jwtFilter)

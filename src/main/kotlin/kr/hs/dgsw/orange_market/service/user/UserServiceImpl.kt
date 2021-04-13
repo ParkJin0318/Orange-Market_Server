@@ -3,6 +3,7 @@ package kr.hs.dgsw.orange_market.service.user
 import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
 import kr.hs.dgsw.orange_market.domain.mapper.toResponse
 import kr.hs.dgsw.orange_market.domain.repository.user.UserRepository
+import kr.hs.dgsw.orange_market.domain.request.user.LocationRequest
 import kr.hs.dgsw.orange_market.domain.response.user.UserResponse
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -17,6 +18,11 @@ class UserServiceImpl(
             it.toResponse()
         })
 
-    override fun updateLocation(userEntity: UserEntity): Mono<UserEntity> =
-        Mono.justOrEmpty(userRepository.save(userEntity))
+    override fun updateLocation(userEntity: UserEntity, locationRequest: LocationRequest): Mono<UserEntity> =
+        Mono.justOrEmpty(
+            userRepository.save(userEntity.apply {
+                this.city = locationRequest.city
+                this.location = locationRequest.location
+            })
+        )
 }

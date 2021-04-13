@@ -17,6 +17,7 @@ class ProductServiceImpl(
     private val productImageRepository: ProductImageRepository
 ): ProductService {
 
+    @Transactional
     override fun getAllProduct(city: String): Mono<List<ProductResponse>> =
         Mono.justOrEmpty(productRepository.findAllByCityEquals(city).orElse(emptyList()).map { productEntity ->
             val imageList = productImageRepository
@@ -27,6 +28,7 @@ class ProductServiceImpl(
             productEntity.toResponse(imageList)
         })
 
+    @Transactional
     override fun getProduct(idx: Int): Mono<ProductResponse> =
         Mono.justOrEmpty(productRepository.findByIdxEquals(idx).map { productEntity ->
             val imageList = productImageRepository
@@ -37,25 +39,38 @@ class ProductServiceImpl(
             productEntity.toResponse(imageList)
         })
 
-
-    override fun saveProduct(productRequest: ProductRequest): Mono<Int> =
-        Mono.justOrEmpty(productRepository.save(productRequest.toEntity()).idx)
-
-    override fun saveProductImage(productIdx: Int, imageList: List<String>): Mono<List<ProductImageEntity>> =
-        Mono.justOrEmpty(imageList.map { image ->
-            ProductImageEntity().apply {
-                this.productIdx = productIdx
-                this.imageUrl = image
+    @Transactional
+    override fun saveProduct(productRequest: ProductRequest): Mono<Unit> =
+        Mono.justOrEmpty(productRepository.save(productRequest.toEntity()))
+            .map { entity ->
+                productRequest.imageList?.map { image ->
+                    ProductImageEntity().apply {
+                        this.productIdx = entity.idx!!
+                        this.imageUrl = image
+                    }
+                }?.map(productImageRepository::save)
             }
-        }.map(productImageRepository::save))
 
     @Transactional
-    override fun deleteProduct(idx: Int): Mono<Int> {
+    override fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit> =
+        Mono.justOrEmpty(
+            productRepository.save(productRequest.toEntity().apply { this.idx = idx })
+        ).map { entity ->
+            productRequest.imageList?.map { image ->
+                ProductImageEntity().apply {
+                    this.productIdx = entity.idx!!
+                    this.imageUrl = image
+                }
+            }?.map(productImageRepository::save)
+        }
+
+    @Transactional
+    override fun deleteProduct(idx: Int): Mono<Unit> {
         val isDelete = productRepository.deleteByIdxEquals(idx)
         if (isDelete.get() == 0)
             return Mono.empty()
 
-       return Mono.justOrEmpty(isDelete)
+       return Mono.just(Unit)
     }
 
 }

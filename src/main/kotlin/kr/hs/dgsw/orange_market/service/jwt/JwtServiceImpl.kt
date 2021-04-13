@@ -55,7 +55,15 @@ class JwtServiceImpl(
                 .body["idx"].toString().toInt()
 
             Mono.justOrEmpty(userRepository.findByIdx(idx).map { it })
+        } catch (e: ExpiredJwtException) {
+            Mono.error(e)
+        } catch (e: SignatureException) {
+            Mono.error(e)
+        } catch (e: MalformedJwtException) {
+            Mono.error(e)
+        } catch (e: IllegalArgumentException) {
+            Mono.error(e)
         } catch (e: Exception) {
-            Mono.empty()
+            Mono.error(e)
         }
 }

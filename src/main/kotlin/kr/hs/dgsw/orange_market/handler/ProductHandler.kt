@@ -39,13 +39,23 @@ class ProductHandler(
     fun save(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
-            .flatMap { productRequest ->
-                productService.saveProduct(productRequest).flatMap {
-                    productService.saveProductImage(it, productRequest.imageList ?: emptyList())
-                }
-            }.switchIfEmpty(Mono.error(Exception("등록 실패")))
+            .flatMap(productService::saveProduct)
+            .switchIfEmpty(Mono.error(Exception("등록 실패")))
             .flatMap {
                 Response("등록 성공").toServerResponse()
+            }.onErrorResume {
+                Response(it.message).toServerResponse()
+            }
+
+    fun update(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(ProductRequest::class.java)
+            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .flatMap { productRequest ->
+                val idx = request.pathVariable("idx").toInt()
+                productService.updateProduct(idx, productRequest)
+            }.switchIfEmpty(Mono.error(Exception("업데이트 실패")))
+            .flatMap {
+                Response("업데이트 성공").toServerResponse()
             }.onErrorResume {
                 Response(it.message).toServerResponse()
             }
