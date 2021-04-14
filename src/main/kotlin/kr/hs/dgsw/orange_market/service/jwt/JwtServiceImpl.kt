@@ -5,7 +5,9 @@ import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
 import kr.hs.dgsw.orange_market.domain.repository.user.UserRepository
 import kr.hs.dgsw.orange_market.util.Constants
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import reactor.core.publisher.Mono
 import java.security.Key
 import java.util.*
@@ -43,7 +45,6 @@ class JwtServiceImpl(
             .setExpiration(date)
             .signWith(signInKey)
             .compact())
-            .switchIfEmpty(Mono.error(Exception("토큰 생성 오류")))
     }
 
     override fun validateToken(token: String): Mono<UserEntity> =
@@ -56,15 +57,17 @@ class JwtServiceImpl(
                 .body["idx"].toString().toInt()
 
             Mono.justOrEmpty(userRepository.findByIdx(idx))
+                .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.NOT_FOUND, "사용자 없음")))
+
         } catch (e: ExpiredJwtException) {
-            Mono.error(Exception("토큰 만료"))
+            Mono.error(HttpClientErrorException(HttpStatus.GONE, "토큰 만료"))
         } catch (e: SignatureException) {
-            Mono.error(Exception("토큰 위조"))
+            Mono.error(HttpClientErrorException(HttpStatus.GONE, "토큰 위조"))
         } catch (e: MalformedJwtException) {
-            Mono.error(Exception("토큰 위조"))
+            Mono.error(HttpClientErrorException(HttpStatus.GONE, "토큰 위조"))
         } catch (e: IllegalArgumentException) {
-            Mono.error(Exception("토큰 없음"))
+            Mono.error(HttpClientErrorException(HttpStatus.GONE, "토큰 없음"))
         } catch (e: Exception) {
-            Mono.error(Exception("서버 오류"))
+            Mono.error(HttpClientErrorException(HttpStatus.GONE, "서버 오류"))
         }
 }

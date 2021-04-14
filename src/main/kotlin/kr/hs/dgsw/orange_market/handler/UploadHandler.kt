@@ -1,8 +1,9 @@
 package kr.hs.dgsw.orange_market.handler
 
-import kr.hs.dgsw.orange_market.domain.response.base.Response
+import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
 import kr.hs.dgsw.orange_market.extension.toServerResponse
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
 import org.springframework.util.ResourceUtils
@@ -24,6 +25,7 @@ class UploadHandler {
             .map { it["file"] }
             .flatMapMany { Flux.fromIterable(it) }
             .cast(FilePart::class.java)
+            .next()
             .flatMap { file ->
                 val stringBuilder = StringBuilder()
                     .append(Date().time)
@@ -33,10 +35,7 @@ class UploadHandler {
                 val temp = File("${resource.absolutePath}/${stringBuilder}")
 
                 file.transferTo(temp)
-            }.next()
-            .flatMap {
-                Response("이미지 등록 성공").toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+                    .then(Mono.just(stringBuilder.toString()))
+            }.flatMap { ResponseData(HttpStatus.OK, "업로드 성공했습니다", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 }

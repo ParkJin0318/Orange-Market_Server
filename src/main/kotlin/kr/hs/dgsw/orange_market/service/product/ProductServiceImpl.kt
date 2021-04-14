@@ -7,7 +7,9 @@ import kr.hs.dgsw.orange_market.domain.repository.product.ProductImageRepository
 import kr.hs.dgsw.orange_market.domain.repository.product.ProductRepository
 import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
 import kr.hs.dgsw.orange_market.domain.response.product.ProductResponse
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import reactor.core.publisher.Mono
 import javax.transaction.Transactional
 
@@ -25,7 +27,7 @@ class ProductServiceImpl(
                 .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
-        }).switchIfEmpty(Mono.error(Exception("조회 실패")))
+        }).switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.NOT_FOUND, "조회 실패")))
 
     @Transactional
     override fun getProduct(idx: Int): Mono<ProductResponse> =
@@ -33,7 +35,7 @@ class ProductServiceImpl(
             productRepository.findByIdxEquals(idx)?.toResponse(
                 productImageRepository.findAllByProductIdxEquals(idx).map(ProductImageEntity::imageUrl)
             )
-        ).switchIfEmpty(Mono.error(Exception("조회 실패")))
+        ).switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.NOT_FOUND, "조회 실패")))
 
     @Transactional
     override fun saveProduct(productRequest: ProductRequest): Mono<Unit> =
@@ -49,13 +51,13 @@ class ProductServiceImpl(
                     this.imageUrl = image
                 }
             }?.map(productImageRepository::save))
-            .switchIfEmpty(Mono.error(Exception("저장 실패")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
             .flatMap { Mono.just(Unit) }
 
     @Transactional
     override fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit> =
         Mono.justOrEmpty(productRepository.save(productRequest.toEntity().apply { this.idx = idx }))
-            .switchIfEmpty(Mono.error(Exception("저장 실패")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
             .flatMap { saveProductImage(productRequest.imageList, it.idx) }
 
     @Transactional
@@ -64,5 +66,5 @@ class ProductServiceImpl(
             .flatMap {
                 if (it == 0) Mono.empty()
                 else Mono.just(Unit)
-            }.switchIfEmpty(Mono.error(Exception("삭제 실패")))
+            }.switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
 }

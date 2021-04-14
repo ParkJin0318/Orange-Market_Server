@@ -1,6 +1,5 @@
 package kr.hs.dgsw.orange_market.filter
 
-import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.extension.toServerResponse
 import kr.hs.dgsw.orange_market.lib.AuthorizationExtractor
 import kr.hs.dgsw.orange_market.service.jwt.JwtServiceImpl
@@ -20,12 +19,9 @@ class JwtFilter(
         val token: String = AuthorizationExtractor.extract(serverRequest, "Bearer")
 
         return jwtService.validateToken(token)
-            .switchIfEmpty(Mono.error(Exception("토큰 오류")))
             .flatMap {
                 serverRequest.attributes()["user"] = it
                 handlerFunction.handle(serverRequest)
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            }.onErrorResume { it.toServerResponse() }
     }
 }

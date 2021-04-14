@@ -15,7 +15,7 @@ class UploadRouter(
     fun routerUpload() = nest(path("/upload"),
         router {
             listOf(
-                POST("", handler::uploadImage)
+                POST("/image", handler::uploadImage)
             )
         }
     )

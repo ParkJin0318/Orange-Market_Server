@@ -5,7 +5,9 @@ import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
 import kr.hs.dgsw.orange_market.extension.toServerResponse
 import kr.hs.dgsw.orange_market.service.product.ProductServiceImpl
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
@@ -16,40 +18,40 @@ class ProductHandler(
 ) {
     fun getAll(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.queryParam("city"))
-            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::getAllProduct)
-            .flatMap { ResponseData("조회 성공", it).toServerResponse() }
-            .onErrorResume { Response(it.message).toServerResponse() }
+            .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 
     fun get(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
-            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::getProduct)
-            .flatMap { ResponseData("조회 성공", it).toServerResponse() }
-            .onErrorResume { Response(it.message).toServerResponse() }
+            .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 
     fun save(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
-            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::saveProduct)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
-            .flatMap { Response("등록 성공").toServerResponse() }
-            .onErrorResume { Response(it.message).toServerResponse() }
+            .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 
     fun update(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
-            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap { productRequest ->
                 val idx = request.pathVariable("idx").toInt()
                 productService.updateProduct(idx, productRequest)
             }.switchIfEmpty(Mono.error(Exception("업데이트 실패")))
-            .flatMap { Response("업데이트 성공").toServerResponse() }
-            .onErrorResume { Response(it.message).toServerResponse() }
+            .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 
     fun delete(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
-            .switchIfEmpty(Mono.error(Exception("Bad Request")))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::deleteProduct)
-            .flatMap { Response("삭제 성공").toServerResponse() }
-            .onErrorResume { Response(it.message).toServerResponse() }
+            .flatMap { Response(HttpStatus.OK,"삭제 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
 }
