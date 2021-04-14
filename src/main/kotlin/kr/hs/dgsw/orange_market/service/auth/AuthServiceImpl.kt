@@ -19,10 +19,12 @@ class AuthServiceImpl(
             loginRequest.userPw!!
         )).switchIfEmpty(Mono.error(Exception("아이디 또는 비밀번호가 틀립니다.")))
 
-    override fun register(registerRequest: RegisterRequest): Mono<UserEntity> =
-        Mono.justOrEmpty(userRepository.findByUserId(registerRequest.userId!!))
-            .switchIfEmpty(
-                Mono.justOrEmpty(userRepository.save(registerRequest.toEntity()))
-                    .switchIfEmpty(Mono.error(Exception("회원가입 실패")))
-            ).flatMap { Mono.error(Exception("아이디 존재")) }
+    override fun register(registerRequest: RegisterRequest): Mono<UserEntity> {
+        val user = userRepository.findByUserId(registerRequest.userId!!)
+
+        return if (user == null)
+            Mono.justOrEmpty(userRepository.save(registerRequest.toEntity()))
+        else
+            Mono.error(Exception("아이디 중복"))
+    }
 }

@@ -15,7 +15,7 @@ class UserServiceImpl(
 
     override fun getUser(idx: Int): Mono<UserResponse> =
         Mono.justOrEmpty(
-            userRepository.findByIdx(idx).map { it.toResponse() }
+            userRepository.findByIdx(idx)?.toResponse()
         ).switchIfEmpty(Mono.error(Exception("사용자가 없음")))
 
     override fun updateLocation(userEntity: UserEntity, locationRequest: LocationRequest): Mono<UserEntity> =

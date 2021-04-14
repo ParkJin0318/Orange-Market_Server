@@ -19,25 +19,21 @@ class ProductServiceImpl(
 
     @Transactional
     override fun getAllProduct(city: String): Mono<List<ProductResponse>> =
-        Mono.justOrEmpty(productRepository.findAllByCityEquals(city).orElse(emptyList()).map { productEntity ->
+        Mono.justOrEmpty(productRepository.findAllByCityEquals(city).map { productEntity ->
             val imageList = productImageRepository
-                .findAllByProductIdxEquals(productEntity.idx!!)
-                .orElse(emptyList())
-                .map(ProductImageEntity::imageUrl)
+                .findAllByProductIdxEquals(productEntity?.idx!!)
+                .map { it?.imageUrl }
 
             productEntity.toResponse(imageList)
         }).switchIfEmpty(Mono.error(Exception("조회 실패")))
 
     @Transactional
     override fun getProduct(idx: Int): Mono<ProductResponse> =
-        Mono.justOrEmpty(productRepository.findByIdxEquals(idx).map { productEntity ->
-            val imageList = productImageRepository
-                .findAllByProductIdxEquals(idx)
-                .orElse(emptyList())
-                .map(ProductImageEntity::imageUrl)
-
-            productEntity.toResponse(imageList)
-        }).switchIfEmpty(Mono.error(Exception("조회 실패")))
+        Mono.justOrEmpty(
+            productRepository.findByIdxEquals(idx)?.toResponse(
+                productImageRepository.findAllByProductIdxEquals(idx).map { it?.imageUrl }
+            )
+        ).switchIfEmpty(Mono.error(Exception("조회 실패")))
 
     @Transactional
     override fun saveProduct(productRequest: ProductRequest): Mono<Unit> =

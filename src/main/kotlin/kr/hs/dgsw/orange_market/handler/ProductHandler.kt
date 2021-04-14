@@ -18,32 +18,23 @@ class ProductHandler(
         Mono.justOrEmpty(request.queryParam("city"))
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::getAllProduct)
-            .flatMap {
-                ResponseData("조회 성공", it).toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { ResponseData("조회 성공", it).toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 
     fun get(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::getProduct)
-            .flatMap {
-                ResponseData("조회 성공", it).toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { ResponseData("조회 성공", it).toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 
     fun save(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(productService::saveProduct)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
-            .flatMap {
-                Response("등록 성공").toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { Response("등록 성공").toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 
     fun update(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
@@ -52,11 +43,8 @@ class ProductHandler(
                 val idx = request.pathVariable("idx").toInt()
                 productService.updateProduct(idx, productRequest)
             }.switchIfEmpty(Mono.error(Exception("업데이트 실패")))
-            .flatMap {
-                Response("업데이트 성공").toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { Response("업데이트 성공").toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 
     fun delete(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
