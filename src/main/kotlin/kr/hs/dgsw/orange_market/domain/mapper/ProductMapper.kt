@@ -3,6 +3,7 @@ package kr.hs.dgsw.orange_market.domain.mapper
 import kr.hs.dgsw.orange_market.domain.entity.product.ProductEntity
 import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
 import kr.hs.dgsw.orange_market.domain.response.product.ProductResponse
+import kr.hs.dgsw.orange_market.extension.toBoolean
 import kr.hs.dgsw.orange_market.extension.toStringFormat
 import java.util.*
 
@@ -11,6 +12,7 @@ import java.util.*
  */
 fun ProductRequest.toEntity(): ProductEntity {
     return ProductEntity().apply {
+        this.topic = this@toEntity.topic
         this.title = this@toEntity.title
         this.contents = this@toEntity.contents
         this.price = this@toEntity.price
@@ -27,13 +29,14 @@ fun ProductRequest.toEntity(): ProductEntity {
 fun ProductEntity.toResponse(imageList: List<String?>): ProductResponse {
     return ProductResponse(
         this.idx!!,
+        this.topic!!,
         this.title!!,
         this.contents!!,
         this.price!!,
         this.createAt!!,
-        this.isSold!!,
-        this.city!!,
+        this.isSold!!.toBoolean(),
         this.userIdx!!,
+        this.city!!,
         imageList
     )
 }

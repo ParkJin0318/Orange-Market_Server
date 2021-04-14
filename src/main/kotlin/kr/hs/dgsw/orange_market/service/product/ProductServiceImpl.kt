@@ -21,8 +21,8 @@ class ProductServiceImpl(
     override fun getAllProduct(city: String): Mono<List<ProductResponse>> =
         Mono.justOrEmpty(productRepository.findAllByCityEquals(city).map { productEntity ->
             val imageList = productImageRepository
-                .findAllByProductIdxEquals(productEntity?.idx!!)
-                .map { it?.imageUrl }
+                .findAllByProductIdxEquals(productEntity.idx!!)
+                .map(ProductImageEntity::imageUrl)
 
             productEntity.toResponse(imageList)
         }).switchIfEmpty(Mono.error(Exception("조회 실패")))
@@ -31,7 +31,7 @@ class ProductServiceImpl(
     override fun getProduct(idx: Int): Mono<ProductResponse> =
         Mono.justOrEmpty(
             productRepository.findByIdxEquals(idx)?.toResponse(
-                productImageRepository.findAllByProductIdxEquals(idx).map { it?.imageUrl }
+                productImageRepository.findAllByProductIdxEquals(idx).map(ProductImageEntity::imageUrl)
             )
         ).switchIfEmpty(Mono.error(Exception("조회 실패")))
 

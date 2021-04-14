@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository: JpaRepository<ProductEntity, Any> {
-    fun findAllByCityEquals(city: String): List<ProductEntity?>
+    fun findAllByCityEquals(city: String): List<ProductEntity>
     fun findByIdxEquals(idx: Int): ProductEntity?
     fun deleteByIdxEquals(idx: Int): Int?
 }
