@@ -15,12 +15,13 @@ class ProductRouter(
 ) {
     @Bean
     fun routerProduct() = nest(path("/product"),
-
         router {
             listOf(
                 GET("", handler::getAll),
                 GET("/{idx}", handler::get),
-                POST("", handler::save)
+                POST("", handler::save),
+                PUT("/{idx}", handler::update),
+                DELETE("/{idx}", handler::delete)
             )
         }.filter(jwtFilter)
     )

@@ -16,15 +16,12 @@ class TownLifeEntity {
     @Column(name = "contents")
     var contents: String? = null
 
-    @Column(name = "city")
-    var city: String? = null
-
-    @Column(name = "location")
-    var location: String? = null
-
     @Column(name = "create_at")
     var createAt: String? = null
 
     @Column(name = "user_idx")
     var userIdx: Int? = null
+
+    @Column(name = "city")
+    var city: String? = null
 }

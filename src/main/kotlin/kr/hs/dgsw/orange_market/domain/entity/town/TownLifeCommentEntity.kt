@@ -19,9 +19,6 @@ class TownLifeCommentEntity {
     @Column(name = "create_at")
     var createAt: String? = null
 
-    @Column(name = "location")
-    var location: String? = null
-
     @Column(name = "user_idx")
     var userIdx: Int? = null
 }

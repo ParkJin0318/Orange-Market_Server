@@ -10,6 +10,9 @@ class ProductEntity {
     @Column(name = "idx")
     var idx: Int? = null
 
+    @Column(name = "topic")
+    var topic: String? = null
+
     @Column(name = "title")
     var title: String? = null
 
@@ -25,9 +28,9 @@ class ProductEntity {
     @Column(name = "is_sold")
     var isSold: Int? = null
 
-    @Column(name = "city")
-    var city: String? = null
-
     @Column(name = "user_idx")
     var userIdx: Int? = null
+
+    @Column(name = "city")
+    var city: String? = null
 }

@@ -21,23 +21,14 @@ class AuthHandler(
         request.bodyToMono(LoginRequest::class.java)
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(authService::login)
-            .switchIfEmpty(Mono.error(Exception("로그인 실패")))
-            .flatMap(jwtService::createToken)
-            .switchIfEmpty(Mono.error(Exception("토큰 오류")))
-            .flatMap {
-                ResponseData("로그인 성공", it).toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { jwtService.createToken(it.idx!!) }
+            .flatMap { ResponseData("로그인 성공", it).toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 
     fun register(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(RegisterRequest::class.java)
             .switchIfEmpty(Mono.error(Exception("Bad Request")))
             .flatMap(authService::register)
-            .switchIfEmpty(Mono.error(Exception("회원가입 실패")))
-            .flatMap {
-                Response("회원가입 성공").toServerResponse()
-            }.onErrorResume {
-                Response(it.message).toServerResponse()
-            }
+            .flatMap { Response("회원가입 성공").toServerResponse() }
+            .onErrorResume { Response(it.message).toServerResponse() }
 }
