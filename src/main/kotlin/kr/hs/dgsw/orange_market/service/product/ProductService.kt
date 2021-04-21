@@ -10,5 +10,6 @@ interface ProductService {
     fun saveProduct(productRequest: ProductRequest): Mono<Unit>
     fun saveProductImage(imageList: List<String>?, idx: Int?): Mono<Unit>
     fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit>
+    fun updateSold(idx: Int): Mono<Unit>
     fun deleteProduct(idx: Int): Mono<Unit>
 }

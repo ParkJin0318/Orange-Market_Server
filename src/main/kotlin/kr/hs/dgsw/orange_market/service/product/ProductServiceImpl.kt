@@ -40,6 +40,7 @@ class ProductServiceImpl(
     @Transactional
     override fun saveProduct(productRequest: ProductRequest): Mono<Unit> =
         Mono.justOrEmpty(productRepository.save(productRequest.toEntity()))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
             .flatMap { saveProductImage(productRequest.imageList, it.idx) }
 
     @Transactional
@@ -50,21 +51,37 @@ class ProductServiceImpl(
                     this.productIdx = idx
                     this.imageUrl = image
                 }
-            }?.map(productImageRepository::save))
-            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
-            .flatMap { Mono.just(Unit) }
+            }?.map(productImageRepository::save)
+        ).switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
+         .flatMap { Mono.just(Unit) }
 
     @Transactional
     override fun updateProduct(idx: Int, productRequest: ProductRequest): Mono<Unit> =
-        Mono.justOrEmpty(productRepository.save(productRequest.toEntity().apply { this.idx = idx }))
-            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
-            .flatMap { saveProductImage(productRequest.imageList, it.idx) }
+        Mono.justOrEmpty(productImageRepository.deleteAllByProductIdxEquals(idx)).flatMap {
+            Mono.justOrEmpty(productRepository.save(productRequest.toEntity().apply { this.idx = idx }))
+                .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
+        }.flatMap { saveProductImage(productRequest.imageList, idx) }
+
+    @Transactional
+    override fun updateSold(idx: Int): Mono<Unit> =
+        Mono.justOrEmpty(productRepository.findByIdxEquals(idx))
+            .flatMap {
+                val entity = it.apply { it.idx = idx }
+                if (entity.isSold == 0) {
+                    entity.isSold = 1
+                } else {
+                    entity.isSold = 0
+                }
+                Mono.justOrEmpty(productRepository.save(entity))
+            }.flatMap {
+                Mono.just(Unit)
+            }.switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
 
     @Transactional
     override fun deleteProduct(idx: Int): Mono<Unit> =
         Mono.justOrEmpty(productRepository.deleteByIdxEquals(idx))
             .flatMap {
-                if (it == 0) Mono.empty()
+                if (it == 0) Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패"))
                 else Mono.just(Unit)
-            }.switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
+            }
 }

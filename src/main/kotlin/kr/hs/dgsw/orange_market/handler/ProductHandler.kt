@@ -48,6 +48,13 @@ class ProductHandler(
             .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
+    fun updateSold(request: ServerRequest): Mono<ServerResponse> =
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .flatMap(productService::updateSold)
+            .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
     fun delete(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
