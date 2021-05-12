@@ -12,7 +12,7 @@ import java.util.*
  */
 fun ProductRequest.toEntity(): ProductEntity {
     return ProductEntity().apply {
-        this.topic = this@toEntity.topic
+        this.categoryIdx = this@toEntity.categoryIdx
         this.title = this@toEntity.title
         this.contents = this@toEntity.contents
         this.price = this@toEntity.price
@@ -26,10 +26,10 @@ fun ProductRequest.toEntity(): ProductEntity {
 /**
  * Entity -> Response
  */
-fun ProductEntity.toResponse(imageList: List<String?>): ProductResponse {
+fun ProductEntity.toResponse(images: List<String>, likeUsers: List<Int>): ProductResponse {
     return ProductResponse(
         this.idx!!,
-        this.topic!!,
+        this.categoryIdx!!,
         this.title!!,
         this.contents!!,
         this.price!!,
@@ -37,6 +37,7 @@ fun ProductEntity.toResponse(imageList: List<String?>): ProductResponse {
         this.isSold!!.toBoolean(),
         this.userIdx!!,
         this.city!!,
-        imageList
+        images,
+        likeUsers
     )
 }

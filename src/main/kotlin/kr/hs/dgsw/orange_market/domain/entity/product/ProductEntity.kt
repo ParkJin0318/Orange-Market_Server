@@ -10,8 +10,8 @@ class ProductEntity {
     @Column(name = "idx")
     var idx: Int? = null
 
-    @Column(name = "topic")
-    var topic: String? = null
+    @Column(name = "category_idx")
+    var categoryIdx: Int? = null
 
     @Column(name = "title")
     var title: String? = null

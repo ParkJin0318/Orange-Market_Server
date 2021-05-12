@@ -1,5 +1,6 @@
 package kr.hs.dgsw.orange_market.handler
 
+import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
 import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
@@ -30,12 +31,36 @@ class ProductHandler(
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
+    fun getAllLikeProduct(request: ServerRequest): Mono<ServerResponse> =
+        Mono.justOrEmpty(request.attribute("user"))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .cast(UserEntity::class.java)
+            .flatMap { user -> productService.getAllLikeProduct(user.idx!!) }
+            .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
+    fun getAllCategory(request: ServerRequest): Mono<ServerResponse> =
+        productService.getAllCategory()
+            .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
     fun save(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(ProductRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::saveProduct)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
             .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
+    fun likeProduct(request: ServerRequest): Mono<ServerResponse> =
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .flatMap { idx ->
+                Mono.justOrEmpty(request.attribute("user"))
+                    .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+                    .cast(UserEntity::class.java)
+                    .flatMap { user -> productService.likeProduct(idx, user.idx!!) }
+            }.flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
     fun update(request: ServerRequest): Mono<ServerResponse> =

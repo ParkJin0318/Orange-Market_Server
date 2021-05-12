@@ -17,9 +17,12 @@ class ProductRouter(
     fun routerProduct() = nest(path("/product"),
         router {
             listOf(
+                GET("/category", handler::getAllCategory),
+                GET("/like", handler::getAllLikeProduct),
                 GET("", handler::getAll),
                 GET("/{idx}", handler::get),
                 POST("", handler::save),
+                POST("/like/{idx}", handler::likeProduct),
                 PUT("/{idx}", handler::update),
                 PUT("/sold/{idx}", handler::updateSold),
                 DELETE("/{idx}", handler::delete)
