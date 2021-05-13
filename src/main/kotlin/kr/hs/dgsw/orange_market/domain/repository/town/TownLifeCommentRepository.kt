@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TownLifeCommentRepository: JpaRepository<TownLifeCommentEntity, Any> {
     fun findAllByTownLifeIdx(townLifeIdx: Int): List<TownLifeCommentEntity>
+    fun deleteByIdxEquals(idx: Int): Int?
 }

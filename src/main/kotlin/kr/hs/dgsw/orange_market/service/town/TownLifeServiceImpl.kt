@@ -5,6 +5,7 @@ import kr.hs.dgsw.orange_market.domain.entity.town.TownLifeEntity
 import kr.hs.dgsw.orange_market.domain.mapper.toEntity
 import kr.hs.dgsw.orange_market.domain.repository.town.TownLifeCommentRepository
 import kr.hs.dgsw.orange_market.domain.repository.town.TownLifeRepository
+import kr.hs.dgsw.orange_market.domain.request.town.TownLifeCommentRequest
 import kr.hs.dgsw.orange_market.domain.request.town.TownLifeRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -40,6 +41,12 @@ class TownLifeServiceImpl(
             .flatMap { Mono.just(Unit) }
 
     @Transactional
+    override fun saveTownLifeComment(townLifeCommentRequest: TownLifeCommentRequest): Mono<Unit> =
+        Mono.justOrEmpty(townLifeCommentRepository.save(townLifeCommentRequest.toEntity()))
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
+            .flatMap { Mono.just(Unit) }
+
+    @Transactional
     override fun updateTownLife(idx: Int, townLifeRequest: TownLifeRequest): Mono<Unit> =
         Mono.justOrEmpty(townLifeRepository.save(townLifeRequest.toEntity().apply { this.idx = idx }))
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "저장 실패")))
@@ -48,6 +55,14 @@ class TownLifeServiceImpl(
     @Transactional
     override fun deleteTownLife(idx: Int): Mono<Unit> =
         Mono.justOrEmpty(townLifeRepository.deleteByIdxEquals(idx))
+            .flatMap {
+                if (it == 0) Mono.empty()
+                else Mono.just(Unit)
+            }.switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "삭제 실패")))
+
+    @Transactional
+    override fun deleteTownLifeComment(idx: Int): Mono<Unit> =
+        Mono.justOrEmpty(townLifeCommentRepository.deleteByIdxEquals(idx))
             .flatMap {
                 if (it == 0) Mono.empty()
                 else Mono.just(Unit)

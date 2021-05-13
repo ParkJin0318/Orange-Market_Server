@@ -1,5 +1,6 @@
 package kr.hs.dgsw.orange_market.handler
 
+import kr.hs.dgsw.orange_market.domain.request.town.TownLifeCommentRequest
 import kr.hs.dgsw.orange_market.domain.request.town.TownLifeRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
@@ -45,6 +46,14 @@ class TownLifeHandler(
             .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
+    fun saveComment(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(TownLifeCommentRequest::class.java)
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .flatMap(townLifeService::saveTownLifeComment)
+            .switchIfEmpty(Mono.error(Exception("등록 실패")))
+            .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
     fun update(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(TownLifeRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
@@ -59,6 +68,13 @@ class TownLifeHandler(
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(townLifeService::deleteTownLife)
+            .flatMap { Response(HttpStatus.OK,"삭제 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
+    fun deleteComment(request: ServerRequest): Mono<ServerResponse> =
+        Mono.justOrEmpty(request.pathVariable("idx").toInt())
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .flatMap(townLifeService::deleteTownLifeComment)
             .flatMap { Response(HttpStatus.OK,"삭제 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 }

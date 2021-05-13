@@ -21,8 +21,10 @@ class TownLifeRouter(
                 GET("/{idx}", handler::get),
                 GET("/comment/{idx}", handler::getAllComment),
                 POST("", handler::save),
+                POST("/comment", handler::saveComment),
                 PUT("/{idx}", handler::update),
-                DELETE("/{idx}", handler::delete)
+                DELETE("/{idx}", handler::delete),
+                DELETE("/comment/{idx}", handler::deleteComment)
             )
         }.filter(jwtFilter)
     )
