@@ -10,8 +10,8 @@ class LocalPostEntity {
     @Column(name = "idx")
     var idx: Int? = null
 
-    @Column(name = "topic")
-    var topic: String? = null
+    @Column(name = "topic_idx")
+    var topicIdx: Int? = null
 
     @Column(name = "contents")
     var contents: String? = null

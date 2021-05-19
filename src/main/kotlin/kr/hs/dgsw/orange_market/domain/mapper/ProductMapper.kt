@@ -1,6 +1,8 @@
 package kr.hs.dgsw.orange_market.domain.mapper
 
+import kr.hs.dgsw.orange_market.domain.entity.product.ProductCategoryEntity
 import kr.hs.dgsw.orange_market.domain.entity.product.ProductPostEntity
+import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
 import kr.hs.dgsw.orange_market.domain.request.product.ProductPostRequest
 import kr.hs.dgsw.orange_market.domain.response.product.ProductResponse
 import kr.hs.dgsw.orange_market.extension.toBoolean
@@ -26,18 +28,26 @@ fun ProductPostRequest.toEntity(): ProductPostEntity {
 /**
  * Entity -> Response
  */
-fun ProductPostEntity.toResponse(images: List<String>, likeUsers: List<Int>): ProductResponse {
-    return ProductResponse(
+fun ProductPostEntity.toResponse(
+    user: UserEntity,
+    category: ProductCategoryEntity,
+    images: List<String>,
+    likeUsers: List<Int>
+): ProductResponse =
+    ProductResponse(
         this.idx!!,
         this.categoryIdx!!,
+        category.name!!,
         this.title!!,
         this.contents!!,
         this.price!!,
         this.createAt!!,
         this.isSold!!.toBoolean(),
         this.userIdx!!,
+        user.name!!,
+        user.location!!,
+        user.profileImage ?: "",
         this.city!!,
         images,
         likeUsers
     )
-}

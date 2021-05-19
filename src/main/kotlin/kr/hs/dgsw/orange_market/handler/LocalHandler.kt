@@ -38,6 +38,11 @@ class LocalHandler(
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
+    fun getAllTopic(request: ServerRequest): Mono<ServerResponse> =
+        localService.getAllTopic()
+            .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
     fun savePost(request: ServerRequest): Mono<ServerResponse> =
         request.bodyToMono(LocalPostRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
