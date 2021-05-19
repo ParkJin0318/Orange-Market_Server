@@ -1,11 +1,11 @@
 package kr.hs.dgsw.orange_market.handler
 
-import kr.hs.dgsw.orange_market.domain.request.town.TownLifeCommentRequest
-import kr.hs.dgsw.orange_market.domain.request.town.TownLifeRequest
+import kr.hs.dgsw.orange_market.domain.request.local.LocalCommentRequest
+import kr.hs.dgsw.orange_market.domain.request.local.LocalPostRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
 import kr.hs.dgsw.orange_market.extension.toServerResponse
-import kr.hs.dgsw.orange_market.service.town.TownLifeServiceImpl
+import kr.hs.dgsw.orange_market.service.local.LocalServiceImpl
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
@@ -14,67 +14,77 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Component
-class TownLifeHandler(
-    private val townLifeService: TownLifeServiceImpl
+class LocalHandler(
+    private val localService: LocalServiceImpl
 ) {
-    fun getAll(request: ServerRequest): Mono<ServerResponse> =
+    fun getAllPost(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.queryParam("city"))
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::getAllTownLife)
+            .flatMap(localService::getAllLocalPost)
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun get(request: ServerRequest): Mono<ServerResponse> =
+    fun getPost(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::getTownLife)
+            .flatMap(localService::getLocalPost)
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
     fun getAllComment(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::getAllTownLifeComment)
+            .flatMap(localService::getAllLocalComment)
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun save(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(TownLifeRequest::class.java)
+    fun savePost(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(LocalPostRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::saveTownLife)
+            .flatMap(localService::saveLocalPost)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
             .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
     fun saveComment(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(TownLifeCommentRequest::class.java)
+        request.bodyToMono(LocalCommentRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::saveTownLifeComment)
+            .flatMap(localService::saveLocalComment)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
             .flatMap { Response(HttpStatus.OK,"등록 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun update(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(TownLifeRequest::class.java)
+    fun updatePost(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(LocalPostRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap { townLifeRequest ->
                 val idx = request.pathVariable("idx").toInt()
-                townLifeService.updateTownLife(idx, townLifeRequest)
+                localService.updateLocalPost(idx, townLifeRequest)
             }.switchIfEmpty(Mono.error(Exception("업데이트 실패")))
             .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun delete(request: ServerRequest): Mono<ServerResponse> =
+    fun updateComment(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(LocalCommentRequest::class.java)
+            .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
+            .flatMap { townLifeRequest ->
+                val idx = request.pathVariable("idx").toInt()
+                localService.updateLocalComment(idx, townLifeRequest)
+            }.switchIfEmpty(Mono.error(Exception("업데이트 실패")))
+            .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
+            .onErrorResume { it.toServerResponse() }
+
+    fun deletePost(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::deleteTownLife)
+            .flatMap(localService::deleteLocalPost)
             .flatMap { Response(HttpStatus.OK,"삭제 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
     fun deleteComment(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
-            .flatMap(townLifeService::deleteTownLifeComment)
+            .flatMap(localService::deleteLocalComment)
             .flatMap { Response(HttpStatus.OK,"삭제 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 }

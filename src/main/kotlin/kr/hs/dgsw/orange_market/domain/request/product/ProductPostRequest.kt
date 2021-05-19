@@ -1,6 +1,6 @@
 package kr.hs.dgsw.orange_market.domain.request.product
 
-class ProductRequest {
+class ProductPostRequest {
     var categoryIdx: Int? = null
     var title: String? = null
     var contents: String? = null

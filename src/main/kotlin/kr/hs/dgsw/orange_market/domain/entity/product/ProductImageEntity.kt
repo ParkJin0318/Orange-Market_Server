@@ -10,8 +10,8 @@ class ProductImageEntity {
     @Column(name = "idx")
     var idx: Int? = null
 
-    @Column(name = "product_idx")
-    var productIdx: Int? = null
+    @Column(name = "post_idx")
+    var postIdx: Int? = null
 
     @Column(name = "image_url")
     var imageUrl: String? = null

@@ -11,7 +11,7 @@ class ProductLikeEntity {
     var idx: Int? = null
 
     @Column(name = "product_idx")
-    var productIdx: Int? = null
+    var postIdx: Int? = null
 
     @Column(name = "user_idx")
     var userIdx: Int? = null

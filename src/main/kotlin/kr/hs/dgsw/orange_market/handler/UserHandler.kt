@@ -2,8 +2,8 @@ package kr.hs.dgsw.orange_market.handler
 
 import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
 import kr.hs.dgsw.orange_market.domain.mapper.toResponse
-import kr.hs.dgsw.orange_market.domain.request.user.LocationRequest
-import kr.hs.dgsw.orange_market.domain.request.user.UserRequest
+import kr.hs.dgsw.orange_market.domain.request.user.LocationInfoRequest
+import kr.hs.dgsw.orange_market.domain.request.user.UserInfoRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
 import kr.hs.dgsw.orange_market.extension.toServerResponse
@@ -34,7 +34,7 @@ class UserHandler(
             .onErrorResume { it.toServerResponse() }
 
     fun updateLocation(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(LocationRequest::class.java)
+        request.bodyToMono(LocationInfoRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap {
                 val user = request.attribute("user").get() as UserEntity
@@ -43,7 +43,7 @@ class UserHandler(
             .onErrorResume { it.toServerResponse() }
 
     fun updateUser(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(UserRequest::class.java)
+        request.bodyToMono(UserInfoRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap {
                 val user = request.attribute("user").get() as UserEntity

@@ -1,7 +1,7 @@
 package kr.hs.dgsw.orange_market.handler
 
 import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
-import kr.hs.dgsw.orange_market.domain.request.product.ProductRequest
+import kr.hs.dgsw.orange_market.domain.request.product.ProductPostRequest
 import kr.hs.dgsw.orange_market.domain.response.base.Response
 import kr.hs.dgsw.orange_market.domain.response.base.ResponseData
 import kr.hs.dgsw.orange_market.extension.toServerResponse
@@ -17,14 +17,14 @@ import reactor.core.publisher.Mono
 class ProductHandler(
     private val productService: ProductServiceImpl
 ) {
-    fun getAll(request: ServerRequest): Mono<ServerResponse> =
+    fun getAllProduct(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.queryParam("city"))
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::getAllProduct)
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun get(request: ServerRequest): Mono<ServerResponse> =
+    fun getProduct(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::getProduct)
@@ -44,8 +44,8 @@ class ProductHandler(
             .flatMap { ResponseData(HttpStatus.OK,"조회 성공", it).toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun save(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(ProductRequest::class.java)
+    fun saveProduct(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(ProductPostRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::saveProduct)
             .switchIfEmpty(Mono.error(Exception("등록 실패")))
@@ -63,8 +63,8 @@ class ProductHandler(
             }.flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun update(request: ServerRequest): Mono<ServerResponse> =
-        request.bodyToMono(ProductRequest::class.java)
+    fun updateProduct(request: ServerRequest): Mono<ServerResponse> =
+        request.bodyToMono(ProductPostRequest::class.java)
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap { productRequest ->
                 val idx = request.pathVariable("idx").toInt()
@@ -80,7 +80,7 @@ class ProductHandler(
             .flatMap { Response(HttpStatus.OK,"업데이트 성공").toServerResponse() }
             .onErrorResume { it.toServerResponse() }
 
-    fun delete(request: ServerRequest): Mono<ServerResponse> =
+    fun deleteProduct(request: ServerRequest): Mono<ServerResponse> =
         Mono.justOrEmpty(request.pathVariable("idx").toInt())
             .switchIfEmpty(Mono.error(HttpClientErrorException(HttpStatus.BAD_REQUEST, "잚못된 요청")))
             .flatMap(productService::deleteProduct)

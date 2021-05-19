@@ -7,6 +7,6 @@ import java.util.*
 
 @Repository
 interface ProductImageRepository: JpaRepository<ProductImageEntity, Any> {
-    fun findAllByProductIdxEquals(productIdx: Int): List<ProductImageEntity>
-    fun deleteAllByProductIdxEquals(productIdx: Int): Int?
+    fun findAllByPostIdxEquals(productIdx: Int): List<ProductImageEntity>
+    fun deleteAllByPostIdxEquals(productIdx: Int): Int?
 }

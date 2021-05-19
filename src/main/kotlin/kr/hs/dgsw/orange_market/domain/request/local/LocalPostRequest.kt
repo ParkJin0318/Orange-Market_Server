@@ -1,6 +1,6 @@
-package kr.hs.dgsw.orange_market.domain.request.town
+package kr.hs.dgsw.orange_market.domain.request.local
 
-class TownLifeRequest {
+class LocalPostRequest {
     var topic: String? = null
     var contents: String? = null
     var userIdx: Int? = null

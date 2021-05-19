@@ -1,17 +1,17 @@
 package kr.hs.dgsw.orange_market.domain.mapper
 
-import kr.hs.dgsw.orange_market.domain.entity.town.TownLifeCommentEntity
-import kr.hs.dgsw.orange_market.domain.entity.town.TownLifeEntity
-import kr.hs.dgsw.orange_market.domain.request.town.TownLifeCommentRequest
-import kr.hs.dgsw.orange_market.domain.request.town.TownLifeRequest
+import kr.hs.dgsw.orange_market.domain.entity.local.LocalCommentEntity
+import kr.hs.dgsw.orange_market.domain.entity.local.LocalPostEntity
+import kr.hs.dgsw.orange_market.domain.request.local.LocalCommentRequest
+import kr.hs.dgsw.orange_market.domain.request.local.LocalPostRequest
 import kr.hs.dgsw.orange_market.extension.toStringFormat
 import java.util.*
 
 /**
  * Request -> Entity
  */
-fun TownLifeRequest.toEntity(): TownLifeEntity {
-    return TownLifeEntity().apply {
+fun LocalPostRequest.toEntity(): LocalPostEntity {
+    return LocalPostEntity().apply {
         this.topic = this@toEntity.topic
         this.contents = this@toEntity.contents
         this.createAt = Date().toStringFormat()
@@ -23,9 +23,9 @@ fun TownLifeRequest.toEntity(): TownLifeEntity {
 /**
  * Request -> Entity
  */
-fun TownLifeCommentRequest.toEntity(): TownLifeCommentEntity {
-    return TownLifeCommentEntity().apply {
-        this.townLifeIdx = this@toEntity.townLifeIdx
+fun LocalCommentRequest.toEntity(): LocalCommentEntity {
+    return LocalCommentEntity().apply {
+        this.postIdx = this@toEntity.townLifeIdx
         this.comment = this@toEntity.comment
         this.createAt = Date().toString()
         this.userIdx = this@toEntity.userIdx

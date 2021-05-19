@@ -3,8 +3,8 @@ package kr.hs.dgsw.orange_market.domain.entity.product
 import javax.persistence.*
 
 @Entity
-@Table(name = "product")
-class ProductEntity {
+@Table(name = "product_post")
+class ProductPostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")

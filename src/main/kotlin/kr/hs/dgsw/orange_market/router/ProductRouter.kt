@@ -19,13 +19,13 @@ class ProductRouter(
             listOf(
                 GET("/category", handler::getAllCategory),
                 GET("/like", handler::getAllLikeProduct),
-                GET("", handler::getAll),
-                GET("/{idx}", handler::get),
-                POST("", handler::save),
+                GET("", handler::getAllProduct),
+                GET("/{idx}", handler::getProduct),
+                POST("", handler::saveProduct),
                 POST("/like/{idx}", handler::likeProduct),
-                PUT("/{idx}", handler::update),
+                PUT("/{idx}", handler::updateProduct),
                 PUT("/sold/{idx}", handler::updateSold),
-                DELETE("/{idx}", handler::delete)
+                DELETE("/{idx}", handler::deleteProduct)
             )
         }.filter(jwtFilter)
     )
