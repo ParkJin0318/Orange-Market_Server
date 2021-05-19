@@ -3,15 +3,15 @@ package kr.hs.dgsw.orange_market.domain.entity.product
 import javax.persistence.*
 
 @Entity
-@Table(name = "product")
-class ProductEntity {
+@Table(name = "product_post")
+class ProductPostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")
     var idx: Int? = null
 
-    @Column(name = "topic")
-    var topic: String? = null
+    @Column(name = "category_idx")
+    var categoryIdx: Int? = null
 
     @Column(name = "title")
     var title: String? = null

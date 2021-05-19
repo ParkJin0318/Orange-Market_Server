@@ -1,6 +1,6 @@
-package kr.hs.dgsw.orange_market.domain.request.town
+package kr.hs.dgsw.orange_market.domain.request.local
 
-class TownLifeCommentRequest {
+class LocalCommentRequest {
     var townLifeIdx: Int? = null
     var comment: String? = null
     var location: String? = null

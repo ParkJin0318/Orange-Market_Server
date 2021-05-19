@@ -1,10 +1,10 @@
-package kr.hs.dgsw.orange_market.domain.entity.town
+package kr.hs.dgsw.orange_market.domain.entity.local
 
 import javax.persistence.*
 
 @Entity
-@Table(name = "town_life")
-class TownLifeEntity {
+@Table(name = "local_post")
+class LocalPostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")

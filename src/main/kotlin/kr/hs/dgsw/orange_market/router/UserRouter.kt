@@ -19,6 +19,7 @@ class UserRouter(
             listOf(
                 GET("/profile", handler::getUserProfile),
                 GET("/{idx}", handler::getUser),
+                POST("/profile", handler::updateUser),
                 POST("/location", handler::updateLocation)
             )
         }.filter(jwtFilter)
