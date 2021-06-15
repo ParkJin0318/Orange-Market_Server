@@ -1,5 +1,6 @@
 package kr.hs.dgsw.orange_market.service.local
 
+import kr.hs.dgsw.orange_market.domain.entity.local.LocalCommentEntity
 import kr.hs.dgsw.orange_market.domain.entity.local.LocalPostEntity
 import kr.hs.dgsw.orange_market.domain.entity.local.LocalTopicEntity
 import kr.hs.dgsw.orange_market.domain.entity.user.UserEntity
@@ -34,7 +35,10 @@ class LocalServiceImpl(
         val topic: LocalTopicEntity = localTopicRepository
             .findByIdxEquals(this.topicIdx!!)!!
 
-        return this.toResponse(user, topic)
+        val comments: List<LocalCommentEntity> = localCommentRepository
+            .findAllByPostIdx(this.idx!!)
+
+        return this.toResponse(user, topic, comments.size)
     }
 
     @Transactional

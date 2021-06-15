@@ -31,7 +31,7 @@ fun LocalCommentRequest.toEntity(): LocalCommentEntity {
     return LocalCommentEntity().apply {
         this.postIdx = this@toEntity.postIdx
         this.comment = this@toEntity.comment
-        this.createAt = Date().toString()
+        this.createAt = Date().toStringFormat()
         this.userIdx = this@toEntity.userIdx
     }
 }
@@ -39,7 +39,7 @@ fun LocalCommentRequest.toEntity(): LocalCommentEntity {
 /**
  * Entity -> Response
  */
-fun LocalPostEntity.toResponse(user: UserEntity, topicEntity: LocalTopicEntity): LocalPostResponse =
+fun LocalPostEntity.toResponse(user: UserEntity, topicEntity: LocalTopicEntity, commentCount: Int): LocalPostResponse =
     LocalPostResponse(
         this.idx!!,
         this.topicIdx!!,
@@ -50,7 +50,8 @@ fun LocalPostEntity.toResponse(user: UserEntity, topicEntity: LocalTopicEntity):
         user.name!!,
         user.location!!,
         user.profileImage ?: "",
-        this.city!!
+        this.city!!,
+        commentCount
     )
 
 /**

@@ -11,4 +11,5 @@ data class LocalPostResponse(
     val location: String,
     val profileImage: String,
     val city: String,
+    val commentCount: Int
 )
