@@ -1,5 +1,7 @@
 package kr.hs.dgsw.orange_market.domain.response.product
 
+import java.util.*
+
 data class ProductResponse(
     val idx: Int,
     val categoryIdx: Int,
@@ -7,7 +9,7 @@ data class ProductResponse(
     val title: String,
     val contents: String,
     val price: String,
-    val createAt: String,
+    val createAt: Date,
     val isSold: Boolean,
     val userIdx: Int,
     val name: String,

@@ -18,7 +18,7 @@ fun ProductPostRequest.toEntity(): ProductPostEntity {
         this.title = this@toEntity.title
         this.contents = this@toEntity.contents
         this.price = this@toEntity.price
-        this.createAt = Date().toStringFormat()
+        this.createAt = Date()
         this.isSold = this@toEntity.isSold
         this.userIdx = this@toEntity.userIdx
         this.city = this@toEntity.city

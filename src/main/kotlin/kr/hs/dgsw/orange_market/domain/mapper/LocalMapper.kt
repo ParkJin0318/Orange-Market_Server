@@ -18,7 +18,7 @@ fun LocalPostRequest.toEntity(): LocalPostEntity {
     return LocalPostEntity().apply {
         this.topicIdx = this@toEntity.topicIdx
         this.contents = this@toEntity.contents
-        this.createAt = Date().toStringFormat()
+        this.createAt = Date()
         this.userIdx = this@toEntity.userIdx
         this.city = this@toEntity.city
     }
@@ -31,7 +31,7 @@ fun LocalCommentRequest.toEntity(): LocalCommentEntity {
     return LocalCommentEntity().apply {
         this.postIdx = this@toEntity.postIdx
         this.comment = this@toEntity.comment
-        this.createAt = Date().toStringFormat()
+        this.createAt = Date()
         this.userIdx = this@toEntity.userIdx
     }
 }

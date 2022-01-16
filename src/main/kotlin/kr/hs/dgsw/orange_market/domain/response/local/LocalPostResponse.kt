@@ -1,11 +1,13 @@
 package kr.hs.dgsw.orange_market.domain.response.local
 
+import java.util.*
+
 data class LocalPostResponse(
     val idx: Int,
     val topicIdx: Int,
     val topic: String,
     val contents: String,
-    val createAt: String,
+    val createAt: Date,
     val userIdx: Int,
     val name: String,
     val location: String,
