@@ -7,9 +7,9 @@ import javax.persistence.*
 class LocalTopicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
+    @Column(name = "idx", nullable = false)
     var idx: Int? = null
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     var name: String? = null
 }

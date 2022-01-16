@@ -1,5 +1,7 @@
 package kr.hs.dgsw.orange_market.domain.entity.local
 
+import org.hibernate.annotations.CreationTimestamp
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -7,18 +9,19 @@ import javax.persistence.*
 class LocalCommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
+    @Column(name = "idx", nullable = false)
     var idx: Int? = null
 
-    @Column(name = "post_idx")
+    @Column(name = "post_idx", nullable = false)
     var postIdx: Int? = null
 
-    @Column(name = "comment")
+    @Column(name = "comment", nullable = false)
     var comment: String? = null
 
-    @Column(name = "create_at")
-    var createAt: String? = null
+    @CreationTimestamp
+    @Column(name = "create_at", nullable = false)
+    var createAt: Date? = Date()
 
-    @Column(name = "user_idx")
+    @Column(name = "user_idx", nullable = false)
     var userIdx: Int? = null
 }

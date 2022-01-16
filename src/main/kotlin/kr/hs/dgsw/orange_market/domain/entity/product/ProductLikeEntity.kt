@@ -7,12 +7,12 @@ import javax.persistence.*
 class ProductLikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
+    @Column(name = "idx", nullable = false)
     var idx: Int? = null
 
-    @Column(name = "post_idx")
+    @Column(name = "post_idx", nullable = false)
     var postIdx: Int? = null
 
-    @Column(name = "user_idx")
+    @Column(name = "user_idx", nullable = false)
     var userIdx: Int? = null
 }

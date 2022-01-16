@@ -7,12 +7,12 @@ import javax.persistence.*
 class ProductImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
+    @Column(name = "idx", nullable = false)
     var idx: Int? = null
 
-    @Column(name = "post_idx")
+    @Column(name = "post_idx", nullable = false)
     var postIdx: Int? = null
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = false)
     var imageUrl: String? = null
 }
