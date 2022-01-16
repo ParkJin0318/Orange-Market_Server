@@ -14,9 +14,10 @@ class LocalRouter(
     private val jwtFilter: JwtFilter
 ) {
     @Bean
-    fun routerTownLife() = nest(path("/town"),
+    fun routerTownLife() = nest(path("/local"),
         router {
             listOf(
+                GET("/topic", handler::getAllTopic),
                 GET("", handler::getAllPost),
                 GET("/{idx}", handler::getPost),
                 GET("/comment/{idx}", handler::getAllComment),
